@@ -1,47 +1,55 @@
-import os
 import logging
+import os
 from datetime import datetime
-from typing import Optional
 
 class Logger:
-    """Centralized logging management class"""
-    
-    _instance = None
-    
-    def __new__(cls, *args, **kwargs):
-        """Implement singleton pattern"""
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+    """Logger class for handling application logging"""
     
     def __init__(self):
+        """Initialize logger"""
         self.logger = None
-    
-    def get_logger(self, name: str, filename: Optional[str] = None) -> logging.Logger:
-        """
-        Get logger instance
+        
+    def get_logger(self, name: str, filename: str = None, level: str = 'INFO') -> logging.Logger:
+        """Get logger instance with specified configuration
         
         Args:
             name: Logger name
-            filename: Optional custom log filename
+            filename: Log file path (optional)
+            level: Logging level (default: INFO)
+            
+        Returns:
+            Configured logger instance
         """
-        if self.logger is None:
-            self.logger = logging.getLogger(name)
-            self.logger.setLevel(logging.INFO)
-            
-            # Create formatter
-            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-            
-            # Create file handler with custom filename if provided
-            if filename:
-                file_handler = logging.FileHandler(filename)
-            else:
-                file_handler = logging.FileHandler(f'log_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log')
-            file_handler.setFormatter(formatter)
+        if self.logger is not None:
+            return self.logger
+        
+        # Create logger
+        self.logger = logging.getLogger(name)
+        
+        # Convert level string to logging constant
+        log_level = getattr(logging, level.upper())
+        self.logger.setLevel(log_level)
+        
+        # Create formatters
+        file_formatter = logging.Formatter(
+            '%(asctime)s - %(levelname)s - %(message)s'
+        )
+        error_formatter = logging.Formatter(
+            '%(levelname)s: %(message)s'
+        )
+        
+        # Create file handler for all logs
+        if filename:
+            file_handler = logging.FileHandler(filename)
+            file_handler.setFormatter(file_formatter)
+            file_handler.setLevel(log_level)
             self.logger.addHandler(file_handler)
-            
-            # Prevent logging to console
-            self.logger.propagate = False
+        
+        # Create console handler only for errors
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(error_formatter)
+        console_handler.setLevel(logging.ERROR)  # Only show ERROR and above
+        self.logger.addHandler(console_handler)
         
         return self.logger
     

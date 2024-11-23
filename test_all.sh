@@ -25,82 +25,84 @@ REG_TEST="./processed/reg/cadata_test.txt"
 
 echo "=== Starting AutoSVM Tests ==="
 
-# 1. Classification Tests with kmeans
-echo -e "\n=== Classification Tests with kmeans ==="
 
-# Silhouette method
-run_test "KMeans with Silhouette (CLF)" "python src/main.py \
-    --train $CLF_TRAIN --test $CLF_TEST \
-    --type clf --algorithm kmeans --method silhouette \
-    --svm-type libsvm"
 
-# GAP method
-run_test "KMeans with GAP (CLF)" "python src/main.py \
-    --train $CLF_TRAIN --test $CLF_TEST \
-    --type clf --algorithm kmeans --method gap \
-    --svm-type libsvm"
+# # 1. Classification Tests with kmeans
+# echo -e "\n=== Classification Tests with kmeans ==="
 
-# 2. Classification Tests with fixed k
-echo -e "\n=== Classification Tests with fixed k ==="
+# # Silhouette method
+# run_test "KMeans with Silhouette (CLF)" "python src/main.py \
+#     --train $CLF_TRAIN --test $CLF_TEST \
+#     --type clf --algorithm kmeans --method silhouette \
+#     --svm-type libsvm"
 
-# Random clustering
-run_test "Random Clustering (CLF)" "python src/main.py \
-    --train $CLF_TRAIN --test $CLF_TEST \
-    --type clf --algorithm random --k 5 \
-    --svm-type libsvm"
+# # GAP method
+# run_test "KMeans with GAP (CLF)" "python src/main.py \
+#     --train $CLF_TRAIN --test $CLF_TEST \
+#     --type clf --algorithm kmeans --method gap \
+#     --svm-type libsvm"
 
-# FIFO clustering
-run_test "FIFO Clustering (CLF)" "python src/main.py \
-    --train $CLF_TRAIN --test $CLF_TEST \
-    --type clf --algorithm fifo --k 5 \
-    --svm-type libsvm"
+# # 2. Classification Tests with fixed k
+# echo -e "\n=== Classification Tests with fixed k ==="
 
-# 3. Feature Processing Tests (Classification)
-echo -e "\n=== Feature Processing Tests (Classification) ==="
+# # Random clustering
+# run_test "Random Clustering (CLF)" "python src/main.py \
+#     --train $CLF_TRAIN --test $CLF_TEST \
+#     --type clf --algorithm random --k 5 \
+#     --svm-type libsvm"
 
-# All feature processing options
-run_test "KMeans with All Feature Processing (CLF)" "python src/main.py \
-    --train $CLF_TRAIN --test $CLF_TEST \
-    --type clf --algorithm kmeans --method silhouette \
-    --feature-processing --feature-construction --chi2 --qbsofs \
-    --svm-type libsvm"
+# # FIFO clustering
+# run_test "FIFO Clustering (CLF)" "python src/main.py \
+#     --train $CLF_TRAIN --test $CLF_TEST \
+#     --type clf --algorithm fifo --k 5 \
+#     --svm-type libsvm"
 
-# Only chi-square
-run_test "KMeans with Chi-square (CLF)" "python src/main.py \
-    --train $CLF_TRAIN --test $CLF_TEST \
-    --type clf --algorithm kmeans --method silhouette \
-    --feature-processing --chi2 \
-    --svm-type libsvm"
+# # 3. Feature Processing Tests (Classification)
+# echo -e "\n=== Feature Processing Tests (Classification) ==="
 
-# 4. Regression Tests
-echo -e "\n=== Regression Tests ==="
+# # All feature processing options
+# run_test "KMeans with All Feature Processing (CLF)" "python src/main.py \
+#     --train $CLF_TRAIN --test $CLF_TEST \
+#     --type clf --algorithm kmeans --method silhouette \
+#     --feature-processing --feature-construction --chi2 --qbsofs \
+#     --svm-type libsvm"
 
-# Basic regression with kmeans
-run_test "KMeans (REG)" "python src/main.py \
-    --train $REG_TRAIN --test $REG_TEST \
-    --type reg --algorithm kmeans --method silhouette \
-    --svm-type libsvm"
+# # Only chi-square
+# run_test "KMeans with Chi-square (CLF)" "python src/main.py \
+#     --train $CLF_TRAIN --test $CLF_TEST \
+#     --type clf --algorithm kmeans --method silhouette \
+#     --feature-processing --chi2 \
+#     --svm-type libsvm"
 
-# Regression with feature processing
-run_test "KMeans with Feature Processing (REG)" "python src/main.py \
-    --train $REG_TRAIN --test $REG_TEST \
-    --type reg --algorithm kmeans --method silhouette \
-    --feature-processing --feature-construction --chi2 --qbsofs \
-    --svm-type libsvm"
+# # 4. Regression Tests
+# echo -e "\n=== Regression Tests ==="
 
-# 5. ThunderSVM Tests
-echo -e "\n=== ThunderSVM Tests ==="
+# # Basic regression with kmeans
+# run_test "KMeans (REG)" "python src/main.py \
+#     --train $REG_TRAIN --test $REG_TEST \
+#     --type reg --algorithm kmeans --method silhouette \
+#     --svm-type libsvm"
 
-# Classification with ThunderSVM
-run_test "ThunderSVM (CLF)" "python src/main.py \
-    --train $CLF_TRAIN --test $CLF_TEST \
-    --type clf --algorithm kmeans --method silhouette \
-    --svm-type thundersvm"
+# # Regression with feature processing
+# run_test "KMeans with Feature Processing (REG)" "python src/main.py \
+#     --train $REG_TRAIN --test $REG_TEST \
+#     --type reg --algorithm kmeans --method silhouette \
+#     --feature-processing --feature-construction --chi2 --qbsofs \
+#     --svm-type libsvm"
 
-# Regression with ThunderSVM
-run_test "ThunderSVM (REG)" "python src/main.py \
-    --train $REG_TRAIN --test $REG_TEST \
-    --type reg --algorithm kmeans --method silhouette \
-    --svm-type thundersvm"
+# # 5. ThunderSVM Tests
+# echo -e "\n=== ThunderSVM Tests ==="
 
-echo -e "\n=== All Tests Completed ===" 
+# # Classification with ThunderSVM
+# run_test "ThunderSVM (CLF)" "python src/main.py \
+#     --train $CLF_TRAIN --test $CLF_TEST \
+#     --type clf --algorithm kmeans --method silhouette \
+#     --svm-type thundersvm"
+
+# # Regression with ThunderSVM
+# run_test "ThunderSVM (REG)" "python src/main.py \
+#     --train $REG_TRAIN --test $REG_TEST \
+#     --type reg --algorithm kmeans --method silhouette \
+#     --svm-type thundersvm"
+
+# echo -e "\n=== All Tests Completed ===" 

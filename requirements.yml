@@ -1,12 +1,9 @@
-name: absa_svm
+name: autosvm
 channels:
-  - conda-forge
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/pro
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2
-  - defaults
+  - conda-forge
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
 dependencies:
   - _libgcc_mutex=0.1=main
   - _openmp_mutex=5.1=1_gnu
@@ -229,4 +226,4 @@ dependencies:
       - torchaudio==0.7.2
       - torchvision==0.8.2+cu92
       - ultraopt==0.1.1
-prefix: /home/zhangrui/miniconda3/envs/absa_svm
+prefix: /home/zhangrui/miniconda3/envs/autosvm

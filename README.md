@@ -63,10 +63,14 @@ A Python tool for automated SVM analysis with clustering and feature processing.
 
 ## Usage
 
+download the dataset from [here](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/)
+preprocess the dataset using `src/preprocessdata.py`
+
 ### Basic Command
-bash
+```bash
 python src/main.py --train <train_file> --test <test_file> \
 --type <clf/reg> [options]
+```
 
 
 ### Required Arguments
@@ -113,58 +117,79 @@ python src/main.py --train <train_file> --test <test_file> \
 ### Examples
 
 1. Basic Classification:
+```bash
 python src/main.py --train data.txt --test test.txt --type clf
+```
 
 2. Classification with Clustering:
+```bash
 python src/main.py --train data.txt --test test.txt --type clf \
 --clustering --algorithm kmeans --method silhouette
+```
 
 3. Classification with Feature Processing:
+```bash
 python src/main.py --train data.txt --test test.txt --type clf \
 --feature-processing --feature-construction --mutual-info --qbsofs
+```
 
 4. Classification with Hyperparameter Tuning:
+```bash
 python src/main.py --train data.txt --test test.txt --type clf \
 --tune-hyperparams --optimizer bayes --n-iter 20
+```
 
 5. Full Pipeline:
+```bash
 python src/main.py --train data.txt --test test.txt --type clf \
 --clustering --algorithm kmeans \
 --feature-processing --mutual-info \
 --tune-hyperparams --optimizer bayes
+```
 
 6. Classification with Parallel Training:
+```bash
 python src/main.py --train data.txt --test test.txt --type clf \
 --clustering --algorithm kmeans \
 --feature-processing --mutual-info \
 --tune-hyperparams --optimizer bayes \
 --parallel-train --train-jobs 4
+```
 
 
 7. Full Pipeline with Parallel Training:
+```bash
 python src/main.py --train data.txt --test test.txt --type clf \
 --clustering --algorithm kmeans \
 --feature-processing --mutual-info \
 --tune-hyperparams --optimizer bayes \
 --parallel-train --train-jobs -1
+```
 
-6. Classification with Data Balancing:
+8. Classification with Data Balancing:
+```bash
 python src/main.py --train data.txt --test test.txt --type clf \
 --balance-data --min-class-ratio 0.5 --max-balance-samples 100
+```
 
-7. Using Different Parallel Settings:
+9. Using Different Parallel Settings:
+```bash
 python src/main.py --train data.txt --test test.txt --type clf \
 --clustering --algorithm kmeans \
 --feature-processing --mutual-info \
 --tune-hyperparams --optimizer bayes \
 --parallel-train --train-jobs 4 --parallel-cluster --cluster-jobs 4
+```
 
-7. Full Pipeline with All Options:
+10. Full Pipeline with All Options:
+```bash
 python src/main.py --train data.txt --test test.txt --type clf \
 --clustering --algorithm kmeans \
 --feature-processing --mutual-info \
 --tune-hyperparams --optimizer bayes \
---parallel-train --train-jobs -1 --balance-data --min-class-ratio 0.5 --max-balance-samples 100
+--parallel-train --train-jobs -1 \
+--balance-data --min-class-ratio 0.5 --max-balance-samples 100
+```
 
 ## Project Structure
 AutoSVM/
@@ -196,6 +221,37 @@ AutoSVM/
 - ThunderSVM (optional)
 - psutil
 
-python src/main.py --train ./data/processed/clf/aloi_train.txt --test ./data/processed/clf/aloi_test.txt --type clf --clustering --algorithm kmeans --balance-data --feature-processing --mutual-info --tune-hyperparams --optimizer bayes
+## for environment:
+```bash
+conda env create -f requirements.yml
+conda activate autosvm
+```
 
-python src/main.py --train ./data/processed/clf/aloi_train.txt --test ./data/processed/clf/aloi_test.txt --type clf --parallel-train  --clustering --algorithm kmeans --parallel-cluster --balance-data --feature-processing --mutual-info --parallel-feature --tune-hyperparams --optimizer bayes --parallel-tuning
+## for thundersvm:
+```bash
+pip install torch==1.7.1+cu92 torchvision==0.8.2+cu92 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+pip install thundersvm==0.3.12
+```
+
+## for running:
+```bash
+python src/main.py --train ./data/processed/clf/aloi_train.txt --test ./data/processed/clf/aloi_test.txt --type clf \
+--clustering --algorithm kmeans --balance-data --feature-processing --mutual-info \
+--tune-hyperparams --optimizer bayes
+
+python src/main.py --train ./data/processed/reg/cadata_train.txt --test ./data/processed/reg/cadata_test.txt --type reg \
+--clustering --algorithm kmeans --balance-data --feature-processing --mutual-info \
+--tune-hyperparams --optimizer bayes
+```
+
+```bash
+python src/main.py --train ./data/processed/clf/aloi_train.txt --test ./data/processed/clf/aloi_test.txt --type clf \
+--parallel-train  --clustering --algorithm kmeans --parallel-cluster \
+--balance-data --feature-processing --mutual-info --parallel-feature \
+--tune-hyperparams --optimizer bayes --parallel-tuning
+
+python src/main.py --train ./data/processed/reg/cadata_train.txt --test ./data/processed/reg/cadata_test.txt --type reg \
+--parallel-train  --clustering --algorithm kmeans --parallel-cluster \
+--balance-data --feature-processing --mutual-info --parallel-feature \
+--tune-hyperparams --optimizer bayes --parallel-tuning
+```

@@ -10,6 +10,8 @@ import time
 from datetime import datetime
 from feature_processor import FeatureProcessor
 from svm_trainer import SVMTrainer
+import multiprocessing
+import psutil
 
 # Configuration constants
 K_MIN = 5
@@ -28,6 +30,7 @@ def normalize_sparse_data(X: scipy.sparse.csr_matrix) -> scipy.sparse.csr_matrix
         L2 normalized sparse matrix
     """
     return normalize(X, norm='l2', axis=1, copy=True)
+
 
 def main():
     # Start total time
@@ -105,8 +108,10 @@ def main():
     parser.add_argument('--tuning-jobs', type=int, default=-1,
                       help='Number of parallel jobs for hyperparameter tuning (-1 for all CPUs)')
     
-    
-    
+    # Add logging level argument
+    parser.add_argument('--log-level', type=str, default='INFO',
+                      choices=['debug', 'info', 'warning', 'error', 'critical'],
+                      help='Set the logging level (case-insensitive)')
     
     args = parser.parse_args()
     
@@ -117,10 +122,19 @@ def main():
     log_dir = "./log"
     os.makedirs(log_dir, exist_ok=True)
     
-    # Initialize logger with dataset name in log file
-    logger = Logger().get_logger('main', 
-                               filename=os.path.join(log_dir, 
-                                                   f'log_{train_dataset_name}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'))
+    # Initialize logger with dataset name in log file and set log level
+    # Convert log level to uppercase for logging module
+    logger = Logger().get_logger(
+        'main', 
+        filename=os.path.join(
+            log_dir, 
+            f'log_{train_dataset_name}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'
+        ),
+        level=args.log_level.upper()  # Convert to uppercase before passing to logger
+    )
+    
+    # Log the current logging level
+    logger.debug(f"Logging level set to: {args.log_level}")
     
     logger.info(f"Started clustering analysis at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
@@ -130,14 +144,14 @@ def main():
     logger.info(f"  Training data: {args.train}")
     logger.info(f"  Test data: {args.test}")
     
-    logger.info("\nTask Configuration:")
+    logger.info("Task Configuration:")
     logger.info(f"  Task type: {args.type}")
     logger.info(f"  SVM implementation: {args.svm_type}")
     logger.info(f"  Parallel training: {args.parallel_train}")
     if args.parallel_train:
         logger.info(f"  Training jobs: {args.train_jobs}")
     
-    logger.info("\nClustering Configuration:")
+    logger.info("Clustering Configuration:")
     logger.info(f"  Clustering enabled: {args.clustering}")
     if args.clustering:
         logger.info(f"  Algorithm: {args.algorithm}")
@@ -155,20 +169,20 @@ def main():
         logger.info(f"  Sampling enabled: {ENABLE_SAMPLING}")
         logger.info(f"  Sampling ratio: {SAMPLE_RATIO}")
 
-    logger.info("\nData Balancing Configuration:")
+    logger.info("Data Balancing Configuration:")
     logger.info(f"  Data balancing enabled: {args.balance_data}")
     if args.balance_data:
         logger.info(f"  Minimum class ratio: {args.min_class_ratio}")
         logger.info(f"  Maximum balance samples: {args.max_balance_samples}")
         
-    logger.info("\nFeature Processing Configuration:")
+    logger.info("Feature Processing Configuration:")
     logger.info(f"  Feature processing enabled: {args.feature_processing}")
     if args.feature_processing:
         logger.info(f"  Feature construction: {args.feature_construction}")
         logger.info(f"  Mutual info selection: {args.mutual_info}")
         logger.info(f"  QBSOFS selection: {args.qbsofs}")
     
-    logger.info("\nHyperparameter Tuning Configuration:")
+    logger.info("Hyperparameter Tuning Configuration:")
     logger.info(f"  Tuning enabled: {args.tune_hyperparams}")
     if args.tune_hyperparams:
         logger.info(f"  Optimizer: {args.optimizer}")
@@ -380,30 +394,33 @@ def main():
         # Perform hyperparameter tuning if enabled
         if args.tune_hyperparams:
             logger.info("\n=== Hyperparameter Tuning ===")
-            tuning_start_time = time.time()  # Start timing
+            tuning_start_time = time.time()
             
             from hyperparameter_tuner import SVMHyperparameterTuner
             
+            # Initialize hyperparameter tuner with basic configuration
+            # The tuner will handle optimal parallelization internally
             tuner = SVMHyperparameterTuner(
                 task_type=args.type,
                 optimizer=args.optimizer,
                 n_iter=args.n_iter,
                 cv=args.cv_folds,
-                n_jobs=1,  # Single thread for each cluster
                 random_state=42
             )
             
-            # Perform tuning
             try:
                 if args.parallel_tuning:
+                    # Perform parallel tuning across clusters
+                    # n_jobs will be calculated automatically if set to -1
                     tuning_results = tuner.tune_parallel(
                         processed_clusters,
                         n_jobs=args.tuning_jobs
                     )
                 else:
+                    # Perform sequential tuning for each cluster
                     tuning_results = tuner.tune(processed_clusters)
                 
-                # Store tuned parameters for each cluster
+                # Store tuning results and combine with default parameters
                 if tuning_results:
                     params_list = [
                         {**default_params, **result['best_params']}
@@ -417,7 +434,7 @@ def main():
                 logger.warning("Using default parameters")
                 params_list = [default_params] * len(processed_clusters)
             
-            tuning_time = time.time() - tuning_start_time  # Calculate time
+            tuning_time = time.time() - tuning_start_time
             logger.info(f"\nHyperparameter tuning completed in {tuning_time:.2f} seconds")
         else:
             tuning_time = 0  # Set to 0 if not used
