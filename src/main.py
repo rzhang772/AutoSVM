@@ -90,6 +90,8 @@ def main():
                       help='Smoothing factor for independence check')
     parser.add_argument('--feature-construction', action='store_true',
                       help='Enable feature construction')
+    parser.add_argument('--discretize-ratio', type=float, default=0.1,
+                      help='Ratio of features to discretize (default: 0.3)')
     parser.add_argument('--mutual-info', action='store_true',
                       help='Enable mutual information feature selection')
     parser.add_argument('--qbsofs', action='store_true',
@@ -98,6 +100,7 @@ def main():
                       help='Enable parallel feature processing')
     parser.add_argument('--feature-jobs', type=int, default=-1,
                       help='Number of parallel jobs for feature processing (-1 for all CPUs)')
+    
     
     # Hyperparameter tuning arguments
     parser.add_argument('--tune-hyperparams', action='store_true',

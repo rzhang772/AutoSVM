@@ -7,14 +7,16 @@ from sklearn.preprocessing import StandardScaler, KBinsDiscretizer
 class FeatureConstructor:
     """Class for constructing new features from existing ones"""
     
-    def __init__(self, n_bins: int = 5):
+    def __init__(self, n_bins: int = 5, discretize_ratio: float = 0.3):
         """
         Initialize FeatureConstructor
         
         Args:
             n_bins: Number of bins for discretization
+            discretize_ratio: Ratio of features to discretize (top features by range)
         """
         self.n_bins = n_bins
+        self.discretize_ratio = discretize_ratio
         self.logger = logging.getLogger('feature_constructor')
         
     def construct_features(self, X: scipy.sparse.csr_matrix) -> Tuple[scipy.sparse.csr_matrix, List[str]]:
@@ -27,7 +29,7 @@ class FeatureConstructor:
         Returns:
             Tuple of (augmented feature matrix, list of feature descriptions)
         """
-        self.logger.info("Starting feature construction")
+        # self.logger.info("Starting feature construction")
         feature_descriptions = []
         new_features = []
         
@@ -41,14 +43,19 @@ class FeatureConstructor:
             new_features.append(scipy.sparse.csr_matrix(X_scaled))
             feature_descriptions.extend([f"scaled_{i}" for i in range(X.shape[1])])
             
-            # 2. Discretization of original features
+            # 2. Select features for discretization based on range
+            feature_ranges = np.ptp(X_dense, axis=0)  # Calculate range for each feature
+            n_features_to_discretize = int(np.ceil(X.shape[1] * self.discretize_ratio))
+            top_features = np.argsort(feature_ranges)[-n_features_to_discretize:]
+            
+            # Discretize selected features
             discretizer = KBinsDiscretizer(n_bins=self.n_bins, encode='onehot-dense', strategy='quantile')
-            X_discrete = discretizer.fit_transform(X_dense)
+            X_discrete = discretizer.fit_transform(X_dense[:, top_features])
             new_features.append(scipy.sparse.csr_matrix(X_discrete))
             feature_descriptions.extend([f"discrete_bin_{i}" for i in range(X_discrete.shape[1])])
             
             # 3. Feature interactions (for non-zero elements)
-            for i in range(min(5, X.shape[1])):  # Limit to first 5 features to avoid explosion
+            for i in range(min(5, X.shape[1])):
                 for j in range(i+1, min(6, X.shape[1])):
                     # Multiplication
                     mult = X_dense[:, i] * X_dense[:, j]
@@ -84,7 +91,7 @@ class FeatureConstructor:
             # Combine all new features
             X_new = scipy.sparse.hstack([X] + new_features).tocsr()
             
-            self.logger.info(f"Constructed {X_new.shape[1] - X.shape[1]} new features")
+            # self.logger.debug(f"Constructed {X_new.shape[1] - X.shape[1]} new features")
             return X_new, feature_descriptions
             
         except Exception as e:
