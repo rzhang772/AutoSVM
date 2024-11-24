@@ -82,7 +82,7 @@ class FeatureConstructor:
             feature_descriptions.append("row_std_nonzero")
             
             # Combine all new features
-            X_new = scipy.sparse.hstack([X] + new_features)
+            X_new = scipy.sparse.hstack([X] + new_features).tocsr()
             
             self.logger.info(f"Constructed {X_new.shape[1] - X.shape[1]} new features")
             return X_new, feature_descriptions

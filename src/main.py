@@ -84,7 +84,7 @@ def main():
                       help='Enable feature processing')
     parser.add_argument('--independence-check', action='store_true',
                       help='Enable feature independence check')
-    parser.add_argument('--independence-threshold', type=float, default=1e-5,
+    parser.add_argument('--independence-threshold', type=float, default=1e-4,
                       help='Threshold for feature independence check')
     parser.add_argument('--independence-smooth', type=float, default=1.0,
                       help='Smoothing factor for independence check')
