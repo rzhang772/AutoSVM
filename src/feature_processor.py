@@ -56,19 +56,20 @@ class FeatureProcessor:
                                 y: np.ndarray,
                                 cluster_id: int) -> Tuple[scipy.sparse.csr_matrix, List[int]]:
         """Process features for a single cluster"""
+        X_filtered = X
         # Feature construction
         if self.enable_construction:
             try:
                 X_augmented, feature_descriptions = self.constructor.construct_features(X)
                 self.logger.info(f"Original features: {X.shape[1]}")
                 self.logger.info(f"After construction: {X_augmented.shape[1]}")
-                X = X_augmented
+                X_filtered = X_augmented
             except Exception as e:
                 self.logger.error(f"Feature construction failed: {str(e)}")
         
         # Initial non-zero filtering
         n_samples = X.shape[0]
-        non_zero_counts = np.array((X != 0).sum(axis=0)).flatten()
+        non_zero_counts = np.array((X_filtered != 0).sum(axis=0)).flatten()
         non_zero_ratios = non_zero_counts / n_samples
         
         non_zero_mask = non_zero_ratios >= self.non_zero_threshold
@@ -76,7 +77,7 @@ class FeatureProcessor:
             self.logger.warning(f"No features passed non-zero threshold {self.non_zero_threshold}")
             return None, []
             
-        X_filtered = X[:, non_zero_mask]
+        X_filtered = X_filtered[:, non_zero_mask]
         initial_features = np.where(non_zero_mask)[0]
         
         self.logger.debug(f"Features after non-zero filtering: {len(initial_features)}")
