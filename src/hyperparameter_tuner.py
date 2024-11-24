@@ -348,11 +348,11 @@ class SVMHyperparameterTuner:
         ]
         
         # Process batches in parallel using ProcessPoolExecutor
-        from concurrent.futures import ProcessPoolExecutor, as_completed
+        from concurrent.futures import ThreadPoolExecutor, as_completed
         
         all_results = []
         
-        with ProcessPoolExecutor(max_workers=n_jobs) as executor:
+        with ThreadPoolExecutor(max_workers=n_jobs) as executor:
             future_to_batch = {
                 executor.submit(self._tune_batch, batch): batch 
                 for batch in batches

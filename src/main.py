@@ -82,6 +82,12 @@ def main():
     # Feature processing arguments
     parser.add_argument('--feature-processing', action='store_true',
                       help='Enable feature processing')
+    parser.add_argument('--independence-check', action='store_true',
+                      help='Enable feature independence check')
+    parser.add_argument('--independence-threshold', type=float, default=1e-5,
+                      help='Threshold for feature independence check')
+    parser.add_argument('--independence-smooth', type=float, default=1.0,
+                      help='Smoothing factor for independence check')
     parser.add_argument('--feature-construction', action='store_true',
                       help='Enable feature construction')
     parser.add_argument('--mutual-info', action='store_true',
@@ -178,6 +184,9 @@ def main():
     logger.info("Feature Processing Configuration:")
     logger.info(f"  Feature processing enabled: {args.feature_processing}")
     if args.feature_processing:
+        logger.info(f"  Independence check: {args.independence_check}")
+        logger.info(f"  Independence threshold: {args.independence_threshold}")
+        logger.info(f"  Independence smoothing: {args.independence_smooth}")
         logger.info(f"  Feature construction: {args.feature_construction}")
         logger.info(f"  Mutual info selection: {args.mutual_info}")
         logger.info(f"  QBSOFS selection: {args.qbsofs}")
@@ -339,8 +348,26 @@ def main():
         if args.feature_processing:
             logger.info("\n=== Feature Processing ===")
             feature_process_start = time.time()
-            
+
+            # Feature independence check
+            if args.independence_check:
+                logger.info("\n=== Feature Independence Check ===")
+                from feature_independence import FeatureIndependenceChecker
+                
+                checker = FeatureIndependenceChecker(
+                    threshold=args.independence_threshold,
+                    smooth_factor=args.independence_smooth,
+                    n_jobs=-1,
+                    logger=logger
+                )
+                
+                balanced_clusters = checker.check_independence(
+                    balanced_clusters,
+                    args.train  # Pass the dataset name
+                )
+
             # Initialize feature processor
+            logger.info("\n=== Other Feature Processing ===")
             feature_processor = FeatureProcessor(
                 task_type=args.type,
                 enable_construction=args.feature_construction,
