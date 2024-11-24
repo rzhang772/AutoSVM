@@ -90,38 +90,42 @@ class FeatureProcessor:
                 # Convert to dense for mutual information calculation
                 X_dense = X_filtered.toarray()
                 
-                # Use SelectPercentile instead of SelectKBest
-                selector = SelectPercentile(
+                # First try SelectPercentile
+                percentile_selector = SelectPercentile(
                     score_func=score_func,
-                    percentile=50  # Select top 50% features by default
+                    percentile=50  # Select top 50% features
                 )
-                X_filtered = selector.fit_transform(X_dense, y)
+                X_percentile = percentile_selector.fit_transform(X_dense, y)
                 
-                # Get selected feature indices
-                selected_mask = selector.get_support()
-                initial_features = initial_features[selected_mask]
-                
-                # Ensure minimum number of features
-                if len(initial_features) < self.min_features:
-                    # Switch to SelectKBest if needed
-                    selector = SelectKBest(
+                # Check if we have enough features
+                if X_percentile.shape[1] >= self.min_features:
+                    # Use SelectPercentile results
+                    X_filtered = X_percentile
+                    selected_mask = percentile_selector.get_support()
+                    initial_features = initial_features[selected_mask]
+                    selector_scores = percentile_selector.scores_
+                    selection_method = 'percentile'
+                else:
+                    # Fall back to SelectKBest
+                    kbest_selector = SelectKBest(
                         score_func=score_func,
                         k=self.min_features
                     )
-                    X_filtered = selector.fit_transform(X_dense, y)
-                    selected_mask = selector.get_support()
+                    X_filtered = kbest_selector.fit_transform(X_dense, y)
+                    selected_mask = kbest_selector.get_support()
                     initial_features = initial_features[selected_mask]
+                    selector_scores = kbest_selector.scores_
+                    selection_method = 'k_best'
                 
                 # Store feature scores
                 self.feature_stats[cluster_id] = {
-                    'mutual_info_scores': dict(zip(initial_features, selector.scores_)),
+                    'mutual_info_scores': dict(zip(initial_features, selector_scores)),
                     'selected_features': initial_features.tolist(),
-                    'n_selected_features': len(initial_features),
-                    'selection_method': 'percentile' if len(initial_features) >= self.min_features else 'k_best'
+                    'selection_method': selection_method
                 }
                 
                 self.logger.debug(f"Features after mutual information selection: {len(initial_features)}")
-                self.logger.debug(f"Selection method: {self.feature_stats[cluster_id]['selection_method']}")
+                self.logger.debug(f"Selection method used: {selection_method}")
                 
             except Exception as e:
                 self.logger.error(f"Mutual information selection failed: {str(e)}")

@@ -347,7 +347,7 @@ def main():
                 enable_mutual_info=args.mutual_info,
                 enable_qbsofs=args.qbsofs,
                 non_zero_threshold=0.01,
-                min_features=10,
+                min_features=5,
                 qbsofs_params={
                     'n_particles': 20,
                     'max_iter': 100,
