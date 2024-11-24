@@ -60,7 +60,7 @@ class FeatureProcessor:
         # Feature construction
         if self.enable_construction:
             try:
-                X_augmented, feature_descriptions = self.constructor.construct_features(X)
+                X_augmented, feature_descriptions = self.constructor.construct_features(X_filtered)
                 self.logger.info(f"Original features: {X.shape[1]}")
                 self.logger.info(f"After construction: {X_augmented.shape[1]}")
                 X_filtered = X_augmented
