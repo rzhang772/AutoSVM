@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.sparse
 from sklearn.model_selection import cross_val_score
-from sklearn.svm import SVC
+from sklearn.svm import SVC, SVR
 from typing import List, Tuple, Dict
 import logging
 
@@ -9,6 +9,7 @@ class QBSOFS:
     """Q-learning Based Bee Swarm Optimization for Feature Selection"""
     
     def __init__(self,
+                 task_type: str,
                  n_bees: int = 20,           # Number of bees in colony
                  max_iter: int = 100,         # Maximum iterations
                  n_elite: int = 5,            # Number of elite sites
@@ -19,11 +20,13 @@ class QBSOFS:
                  discount_factor: float = 0.9, # Q-learning discount factor
                  epsilon: float = 0.1,        # Exploration rate
                  n_folds: int = 5,            # Cross-validation folds
-                 random_state: int = 42):
+                 random_state: int = 42,
+                 logger: logging.Logger = None):
         """
         Initialize QBSOFS
         
         Args:
+            task_type: Task type
             n_bees: Number of scout bees
             max_iter: Maximum iterations
             n_elite: Number of elite sites
@@ -35,7 +38,9 @@ class QBSOFS:
             epsilon: Exploration rate
             n_folds: Number of cross-validation folds
             random_state: Random seed
+            logger: Logger for logging messages
         """
+        self.task_type = task_type
         self.n_bees = n_bees
         self.max_iter = max_iter
         self.n_elite = n_elite
@@ -47,7 +52,7 @@ class QBSOFS:
         self.epsilon = epsilon
         self.n_folds = n_folds
         self.random_state = random_state
-        self.logger = logging.getLogger('qbsofs')
+        self.logger = logger
         
         np.random.seed(random_state)
         self.q_table = {}  # Q-table for storing state-action values
@@ -156,10 +161,11 @@ class QBSOFS:
                 solution[selected] = True
         
         for iteration in range(self.max_iter):
-            self.logger.info(f"QBSOFS Iteration {iteration + 1}/{self.max_iter}")
+            self.logger.debug(f"QBSOFS Iteration {iteration + 1}/{self.max_iter}")
             
             # Evaluate all solutions
             fitness_scores = [self._fitness(X, y, s) for s in solutions]
+            self.logger.debug(f"Fitness scores: {fitness_scores}")
             
             # Sort solutions by fitness
             sorted_indices = np.argsort(fitness_scores)[::-1]
@@ -193,6 +199,7 @@ class QBSOFS:
                         X, y, base_solution.copy(), n_steps=3
                     )
                     new_solutions.append(new_solution)
+            self.logger.debug(f"New solutions bees: {new_solutions}")
             
             # Scout bees explore randomly
             n_scouts = self.n_bees - len(new_solutions)
@@ -207,15 +214,15 @@ class QBSOFS:
                     )
                     scout_solution[selected] = True
                 new_solutions.append(scout_solution)
-            
+            self.logger.debug(f"New solutions scouts: {new_solutions}")
             # Update population
             solutions = new_solutions
             
-            self.logger.info(f"Best fitness: {best_fitness:.4f}, "
+            self.logger.debug(f"Best fitness: {best_fitness:.4f}, "
                            f"Selected features: {np.sum(best_solution)}")
         
         selected_features = np.where(best_solution)[0]
-        return selected_features.tolist(), best_fitness
+        return best_solution, best_fitness
     
     def _fitness(self, X: scipy.sparse.csr_matrix, y: np.ndarray, solution: np.ndarray) -> float:
         """Calculate fitness using SVM with cross-validation"""
@@ -225,7 +232,10 @@ class QBSOFS:
             
         try:
             X_selected = X[:, selected]
-            clf = SVC(kernel='linear', random_state=self.random_state)
+            if self.task_type == 'clf'  :
+                clf = SVC(kernel='linear', random_state=self.random_state)
+            elif self.task_type == 'reg':
+                clf = SVR(random_state=self.random_state)
             scores = cross_val_score(clf, X_selected, y, cv=self.n_folds)
             return np.mean(scores)
         except Exception as e:

@@ -38,11 +38,7 @@ class FeatureProcessor:
         self.non_zero_threshold = non_zero_threshold
         self.min_features = min_features
         self.selected_features = {}
-        
-        # Initialize QBSOFS if enabled
-        if self.enable_qbsofs:
-            self.qbsofs = QBSOFS(**(qbsofs_params or {}))
-        
+        self.qbsofs_params = qbsofs_params
         # Use provided logger or create new one
         self.logger = logger
         self.feature_stats = {}
@@ -127,9 +123,13 @@ class FeatureProcessor:
             try:
                 # TODO: Implement QBSOFS
                 qbsofs_mask = None
+                qbsofs_selector = QBSOFS(logger=self.logger, **(self.qbsofs_params or {}))
+                qbsofs_mask, _ = qbsofs_selector.select_features(X_filtered, y, self.min_features)
                 if qbsofs_mask is not None:
                     qbsofs_selected_features = np.where(qbsofs_mask)[0]
                     selected_features = list(compress(selected_features, qbsofs_mask))
+                    self.logger.debug(f"Features after QBSOFS selection: {len(qbsofs_selected_features)}")
+                    self.logger.debug(f"Features after QBSOFS selection: {qbsofs_selected_features}")
             except Exception as e:
                 self.logger.error(f"QBSOFS failed: {str(e)}")
                 return None, []

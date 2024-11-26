@@ -396,11 +396,17 @@ def main():
                 non_zero_threshold=0.01,
                 min_features=5,
                 qbsofs_params={
-                    'n_particles': 20,
-                    'max_iter': 100,
-                    'alpha': 0.7,
-                    'beta': 0.5,
-                    'n_folds': 5,
+                    'task_type': args.type,
+                    'n_bees': 20,           # Number of bees in colony
+                    'max_iter': 100,         # Maximum iterations
+                    'n_elite': 5,            # Number of elite sites
+                    'n_best': 10,            # Number of best sites
+                    'n_elite_bees': 4,       # Bees recruited for elite sites
+                    'n_best_bees': 2,        # Bees recruited for best sites
+                    'learning_rate': 0.1,  # Q-learning rate
+                    'discount_factor': 0.9, # Q-learning discount factor
+                    'epsilon': 0.1,        # Exploration rate
+                    'n_folds': 5,            # Cross-validation folds
                     'random_state': 42
                 },
                 logger=logger
