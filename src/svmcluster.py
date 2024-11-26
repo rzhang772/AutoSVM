@@ -108,6 +108,7 @@ class SVMCluster:
         self.sample_ratio = sample_ratio
         self.enable_sampling = enable_sampling
         self.batch_size = batch_size
+        self.model = None
         
         # Set random seed
         np.random.seed(random_state)
@@ -403,7 +404,7 @@ class SVMCluster:
                 
         self.logger.info(f"Detailed scores results saved to: {results_file}")
     
-    def cluster(self,
+    def fit_predict(self,
                 X: scipy.sparse.csr_matrix,
                 k: Optional[int] = None,
                 k_range: Optional[range] = None,
@@ -440,20 +441,20 @@ class SVMCluster:
         
         # Perform clustering
         if algorithm == "kmeans":
-            model = MiniBatchKMeans(
+            self.model = MiniBatchKMeans(
                 n_clusters=best_k,
                 random_state=self.random_state,
                 batch_size=self.batch_size
             )
-            labels = model.fit_predict(X)
+            labels = self.model.fit_predict(X)
         elif algorithm == "random":
-            model = RandomClusterer(n_clusters=best_k, random_state=self.random_state)
-            labels = model.fit_predict(X)
+            self.model = RandomClusterer(n_clusters=best_k, random_state=self.random_state)
+            labels = self.model.fit_predict(X)
         else:  # fifo
-            model = FIFOClusterer(n_clusters=best_k, random_state=self.random_state)
-            labels = model.fit_predict(X)
+            self.model = FIFOClusterer(n_clusters=best_k, random_state=self.random_state)
+            labels = self.model.fit_predict(X)
         
-        return best_k, results, labels, model
+        return best_k, results, labels, self.model
     
     def _calculate_gap_for_k(self,
                            X: scipy.sparse.csr_matrix,
@@ -610,3 +611,21 @@ class SVMCluster:
         
         self.logger.info(f"\nBest silhouette score: {best_score:.4f} (k={best_k})")
         return scores
+    
+    
+    def predict(self, X: scipy.sparse.csr_matrix) -> np.ndarray:
+        """
+        Predict new data using fitted clustering model
+        
+        Args:
+            X: Input feature matrix
+            
+        Returns:
+            Cluster labels for input data
+        """
+        if self.model is None:
+            raise ValueError("Clustering model not fitted. Call fit_predict first.")
+        labels = self.model.predict(X)
+        for cluster_id in np.unique(labels):
+            self.logger.debug(f"Cluster {cluster_id}: {len(labels[labels == cluster_id])} samples") 
+        return labels

@@ -30,6 +30,7 @@ class FeatureIndependenceChecker:
         self.n_jobs = n_jobs
         self.logger = logger or logging.getLogger('feature_independence')
         self.cluster_stats = {}  # Store statistics for each cluster
+        self.selected_features = {}  # Store selected features for each cluster
         self.feature_scores = {}  # Store independence scores for each cluster
     
     def _calculate_cluster_stats(self, cluster_data: Tuple) -> Dict:
@@ -103,7 +104,7 @@ class FeatureIndependenceChecker:
                 import gc
                 gc.collect()
     
-    def check_independence(self, clusters: Dict, dataset_name: str) -> Dict:
+    def fit_transform(self, clusters: Dict, dataset_name: str) -> Dict:
         """
         Check feature independence for all clusters
         
@@ -123,6 +124,7 @@ class FeatureIndependenceChecker:
         
         # Process each cluster using pre-calculated statistics
         for cluster_id, (X, y, _) in clusters.items():
+            self.logger.debug(f"before independence check: {X.shape[1]} features")
             # Get target cluster stats
             target_stats = self.cluster_stats[cluster_id]
             target_nonzero = target_stats['nonzero_counts']
@@ -137,7 +139,7 @@ class FeatureIndependenceChecker:
                     other_zero += other_stats['zero_counts']
             
             # Calculate independence scores
-            selected_features = []
+            selected_features_for_single_cluster = []
             scores = []
             
             for feat_idx in range(X.shape[1]):
@@ -152,16 +154,19 @@ class FeatureIndependenceChecker:
                 
                 scores.append(score)
                 if score >= self.threshold:
-                    selected_features.append(feat_idx)
+                    selected_features_for_single_cluster.append(feat_idx)
             
             # Store scores
             self.feature_scores[cluster_id] = dict(enumerate(scores))
+            # Store selected features for each cluster
+            self.selected_features[cluster_id] = selected_features_for_single_cluster
             
             # Filter features
-            if selected_features:
-                X_filtered = X[:, selected_features]
-                filtered_clusters[cluster_id] = (X_filtered, y, selected_features)
-                self.logger.info(f"Cluster {cluster_id}: Selected {len(selected_features)} features")
+            if selected_features_for_single_cluster:
+                X_filtered = X[:, selected_features_for_single_cluster]
+                filtered_clusters[cluster_id] = (X_filtered, y, selected_features_for_single_cluster)
+                self.logger.info(f"Cluster {cluster_id}: Selected {len(selected_features_for_single_cluster)} features")
+                self.logger.debug(f"independence check: Selected features for cluster {cluster_id}: {selected_features_for_single_cluster}")
             else:
                 filtered_clusters[cluster_id] = (X, y, list(range(X.shape[1])))
                 self.logger.warning(f"Cluster {cluster_id}: No features passed independence check, keeping all features")
@@ -170,6 +175,23 @@ class FeatureIndependenceChecker:
         self.save_scores(dataset_name)
         
         return filtered_clusters
+    
+    def transform(self, clusters: Dict) -> Dict:
+        """
+        Transform clusters using selected features
+        """
+        clusters_filtered = {}
+        for cluster_id, (X, y, _) in clusters.items():
+            self.logger.debug(f"before independence check for cluster {cluster_id}: {X.shape[1]} features")
+            if cluster_id in self.selected_features:
+                if self.selected_features[cluster_id]: 
+                    clusters_filtered[cluster_id] = (X[:, self.selected_features[cluster_id]], y, self.selected_features[cluster_id])
+                else:
+                    clusters_filtered[cluster_id] = (X, y, list(range(X.shape[1])))
+            else:
+                clusters_filtered[cluster_id] = (X, y, list(range(X.shape[1])))
+            self.logger.debug(f"independence check: Selected features for cluster {cluster_id}: {clusters_filtered[cluster_id][2]}")  
+        return clusters_filtered
     
     def save_scores(self, dataset_name: str) -> None:
         """

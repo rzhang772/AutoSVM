@@ -1,5 +1,7 @@
 import argparse
 from dataset import Dataset
+from normalizer import DataNormalizer
+from feature_constructor import FeatureConstructor
 from svmcluster import SVMCluster, ClusterMethod
 from logger import Logger
 import numpy as np
@@ -12,6 +14,8 @@ from feature_processor import FeatureProcessor
 from svm_trainer import SVMTrainer
 import multiprocessing
 import psutil
+from feature_independence import FeatureIndependenceChecker
+from hyperparameter_tuner import SVMHyperparameterTuner
 
 # Configuration constants
 K_MIN = 5
@@ -234,6 +238,9 @@ def main():
         X_test, y_test = test_dataset.load_data()
         load_test_time = time.time() - load_test_start
         logger.info(f"Test data loaded in {load_test_time:.2f} seconds")
+
+        logger.info(f"Training data shape: {X_train.shape}")
+        logger.info(f"Test data shape: {X_test.shape}")
         
         # Verify feature dimensions match
         if X_train.shape[1] != X_test.shape[1]:
@@ -241,28 +248,25 @@ def main():
             return 1
         
         # Normalize data
-        logger.info("Normalizing data using L2 normalization...")
+        logger.info("Normalizing training data using L2 normalization...")
         norm_start = time.time()
-        X_train_normalized = normalize_sparse_data(X_train)
-        X_test_normalized = normalize_sparse_data(X_test)
+        normalizer = DataNormalizer(norm='l2', logger=logger)
+        X_train_normalized = normalizer.fit_transform(X_train)
+        
         norm_time = time.time() - norm_start
         logger.info(f"Data normalization completed in {norm_time:.2f} seconds")
-        
-        logger.info(f"Training data shape: {X_train_normalized.shape}")
-        logger.info(f"Test data shape: {X_test_normalized.shape}")
-        
-        # Initialize clusterer with main logger
-        clusterer = SVMCluster(
-            sample_ratio=SAMPLE_RATIO,
-            enable_sampling=ENABLE_SAMPLING,
-            logger=logger  # Pass the main logger
-        )
         
         # Perform clustering if enabled
         if args.clustering:
             logger.info("Starting clustering...")
             cluster_start = time.time()
-            best_k, results, labels, cluster_model = clusterer.cluster(
+            # Initialize clusterer with main logger
+            clusterer = SVMCluster(
+                sample_ratio=SAMPLE_RATIO,
+                enable_sampling=ENABLE_SAMPLING,
+                logger=logger  # Pass the main logger
+            )
+            best_k, results, labels, _ = clusterer.fit_predict(
                 X_train_normalized,
                 k=args.k,
                 k_range=range(K_MIN, K_MAX + 1) if args.k is None else None,
@@ -280,21 +284,17 @@ def main():
             for label, size in zip(unique_labels, cluster_sizes):
                 logger.debug(f"Cluster {label}: {size} samples ({size/len(labels)*100:.2f}%)")
             
-            # Save results
-            save_start = time.time()
-            clusterer.save_results(
-                os.path.basename(args.train),
-                best_k,
-                results,
-                args.method
-            )
-            save_time = time.time() - save_start
-            logger.info(f"Results saved in {save_time:.2f} seconds")
-            
-            # Log clustering information
-            # logger.info(f"Clustering completed with algorithm: {args.algorithm}")
-            # logger.info(f"Number of clusters: {best_k}")
-            # logger.info(f"Clustering model type: {type(cluster_model).__name__}")
+            # Save scores for k results
+            if args.clustering and args.algorithm == 'kmeans' and args.k is None:
+                save_start = time.time()
+                clusterer.save_results(
+                    os.path.basename(args.train),
+                    best_k,
+                    results,
+                    args.method
+                )
+                save_time = time.time() - save_start
+                logger.info(f"Results for k scores saved in {save_time:.2f} seconds")
             
             # Validate clustering results
             if len(np.unique(labels)) != best_k:
@@ -306,9 +306,12 @@ def main():
             best_k = 1
             logger.info("Clustering is disabled. Using entire dataset as a single cluster.")
         
-        # Data balancing for classification task
-        if args.type == 'clf' and args.clustering and args.balance_data:
-            logger.info("\n=== Data Balancing ===")
+        # Data balancing for classification task (only for training data)
+        logger.info("\n=== Data Balancing ===")
+        if args.type == 'reg':
+            logger.info("Data balancing is not required for regression tasks")
+
+        if args.type == 'clf' and args.clustering and args.algorithm == 'kmeans' and args.balance_data:
             balance_start_time = time.time()  # Start timing
             
             from data_balancer import DataBalancer
@@ -339,7 +342,7 @@ def main():
             balance_time = time.time() - balance_start_time  # Calculate time
             logger.info(f"\nData balancing completed in {balance_time:.2f} seconds")
         else:
-            balance_time = 0  # Set to 0 if not used
+            balance_time = 0  # Set to 0 if not used===================================================================
             balanced_clusters = {
                 cluster_id: (X_train_normalized[labels == cluster_id],
                            y_train[labels == cluster_id],
@@ -349,14 +352,13 @@ def main():
         
         # Feature processing
         if args.feature_processing:
-            logger.info("\n=== Feature Processing ===")
+            logger.info("=== Feature Processing ===")
             feature_process_start = time.time()
 
             # Feature independence check
+            independence_start = time.time()
             if args.independence_check:
-                logger.info("\n=== Feature Independence Check ===")
-                from feature_independence import FeatureIndependenceChecker
-                
+                logger.info("=== Feature Independence Check ===")
                 checker = FeatureIndependenceChecker(
                     threshold=args.independence_threshold,
                     smooth_factor=args.independence_smooth,
@@ -364,16 +366,31 @@ def main():
                     logger=logger
                 )
                 
-                balanced_clusters = checker.check_independence(
+                balanced_clusters = checker.fit_transform(
                     balanced_clusters,
                     args.train  # Pass the dataset name
                 )
+                independence_time = time.time() - independence_start
+                logger.info(f"Feature independence check completed in {independence_time:.2f} seconds")
+            
+            # Feature construction
+            construction_start = time.time()
+            if args.feature_construction:
+                try:
+                    logger.info("=== Feature Construction ===")
+                    constructor = FeatureConstructor(n_bins=5, discretize_ratio=args.discretize_ratio, logger=logger)
+                    balanced_clusters = constructor.fit_transform(balanced_clusters)
+                    feature_construction_time = time.time() - construction_start
+                    logger.info(f"Feature construction completed in {feature_construction_time:.2f} seconds")
+                except Exception as e:
+                    logger.error(f"Feature construction failed: {str(e)}")
+        
 
             # Initialize feature processor
-            logger.info("\n=== Other Feature Processing ===")
+            mutual_info_qbsofs_start = time.time()
+            logger.info("=== Mutual Info and QBSOFS ===")
             feature_processor = FeatureProcessor(
                 task_type=args.type,
-                enable_construction=args.feature_construction,
                 enable_mutual_info=args.mutual_info,
                 enable_qbsofs=args.qbsofs,
                 non_zero_threshold=0.01,
@@ -391,16 +408,17 @@ def main():
             
             # Process features for each balanced cluster
             if args.parallel_feature:
-                processed_clusters = feature_processor.process_clusters_parallel(
+                processed_clusters = feature_processor.fit_transform_parallel(
                     balanced_clusters,
                     n_jobs=args.feature_jobs
                 )
             else:
-                processed_clusters = feature_processor.process_clusters(
+                processed_clusters = feature_processor.fit_transform(
                     balanced_clusters
                 )
-            
+            mutual_info_qbsofs_time = time.time() - mutual_info_qbsofs_start
             feature_process_time = time.time() - feature_process_start
+            logger.info(f"Mutual info and QBSOFS completed in {mutual_info_qbsofs_time:.2f} seconds")
             logger.info(f"\nFeature processing completed in {feature_process_time:.2f} seconds")
         else:
             processed_clusters = balanced_clusters
@@ -425,8 +443,6 @@ def main():
         if args.tune_hyperparams:
             logger.info("\n=== Hyperparameter Tuning ===")
             tuning_start_time = time.time()
-            
-            from hyperparameter_tuner import SVMHyperparameterTuner
             
             # Initialize hyperparameter tuner with basic configuration
             # The tuner will handle optimal parallelization internally
@@ -517,117 +533,113 @@ def main():
         # Make predictions and evaluate
         logger.info("\n=== SVM Testing ===")
         test_start_time = time.time()
+
+        # Normalize test data
+        logger.info("Normalizing test data...")
+        X_test_normalized = normalizer.transform(X_test)
         
-        # Assign test data to clusters
-        logger.info("Assigning test data to clusters...")
+        # Cluster test data
+        logger.info("Clustering test data...")
         cluster_assign_start = time.time()
         if args.clustering:
-            test_labels = cluster_model.predict(X_test_normalized)
-            cluster_assign_time = time.time() - cluster_assign_start
-            logger.info(f"Test data clustering time: {cluster_assign_time:.2f} seconds")
+            test_labels = clusterer.predict(X_test_normalized)
         else:
             # If clustering is disabled, assign all test data to cluster 0
             test_labels = np.zeros(X_test_normalized.shape[0], dtype=int)
-            cluster_assign_time = time.time() - cluster_assign_start
             logger.info("Clustering disabled, all test data assigned to single cluster")
-            logger.info(f"Assignment time: {cluster_assign_time:.2f} seconds")
+            
+        test_clusters = {
+                cluster_id: (X_test_normalized[test_labels == cluster_id],
+                           y_test[test_labels == cluster_id],
+                           list(range(X_test_normalized.shape[1])))
+                for cluster_id in np.unique(test_labels)
+            }
+        cluster_assign_time = time.time() - cluster_assign_start
+        logger.info(f"Assignment time: {cluster_assign_time:.2f} seconds")
         
-        # Process and predict for each cluster
+        # no need balance test data
+        if args.independence_check:
+            # independence check is not needed for test data
+            logger.info("Independence Checking test data...")
+            test_clusters = checker.transform(test_clusters)
+        
+        if args.feature_construction:
+            # feature construction is not needed for test data
+            logger.info("Feature Construction test data...")
+            test_clusters = constructor.transform(test_clusters)
+        
+        if args.feature_processing:
+            # other feature processing is not needed for test data
+            logger.info("Mutual and qbsofs test data...")
+            test_clusters = feature_processor.transform(test_clusters)
+
+        # predict and evaluate
+        logger.info("predicting...")
+        predict_start_time = time.time()
+        if args.parallel_train:
+            predictions = svm_trainer.predict_parallel(test_clusters)
+        else:
+            predictions = svm_trainer.predict(test_clusters)   
+        predict_time = time.time() - predict_start_time
+        test_time = time.time() - test_start_time
+        logger.info(f"Prediction time: {predict_time:.2f} seconds")
+        logger.info(f"Testing time: {test_time:.2f} seconds")
+
+        # merge predictions and true labels
+        if(len(predictions) != len(test_clusters)):
+            logger.error("Predictions and test clusters have different lengths")
+            return 1
+        
+        final_results = {} # {cluster_id: (prediction:list, true_labels:list)}
+        for cluster_id, prediction in predictions.items():
+            if(cluster_id in test_clusters):
+                final_results[cluster_id] = (prediction, test_clusters[cluster_id][1])
+            else:
+                logger.error(f"Cluster {cluster_id} not found in test clusters")
+                return 1
+
+        # evaluate
         all_predictions = []
         all_true_labels = []
         total_test_samples = 0
-        total_predict_time = 0
         cluster_metrics = {}
-        
-        for cluster_id in processed_clusters:
-            try:
-                cluster_start_time = time.time()
-                
-                # Get test data for this cluster
-                test_cluster_mask = test_labels == cluster_id
-                X_test_cluster = X_test_normalized[test_cluster_mask]
-                y_test_cluster = y_test[test_cluster_mask]
-                
-                # Apply feature processing if enabled
-                if args.feature_processing:
-                    _, _, selected_features = processed_clusters[cluster_id]
-                    if args.feature_construction:
-                        X_test_cluster, _ = feature_processor.constructor.construct_features(X_test_cluster)
-                    X_test_cluster = X_test_cluster[:, selected_features]
-                
-                # Make predictions
-                predict_start_time = time.time()
-                if args.parallel_train:
-                    cluster_predictions = svm_trainer.predict_parallel(
-                        cluster_id,
-                        X_test_cluster,
-                        use_sparse=(args.svm_type == 'libsvm'),
-                        n_jobs=args.train_jobs
-                    )
+        for cluster_id, (prediction, true_labels) in final_results.items():
+            all_predictions.extend(prediction)
+            all_true_labels.extend(true_labels)
+            total_test_samples += len(prediction)  
+
+            # Calculate metrics and log results
+            if args.type == 'clf':
+                from sklearn.metrics import accuracy_score, f1_score
+                accuracy = accuracy_score(true_labels, prediction)
+                if len(np.unique(true_labels)) == 2:
+                    f1 = f1_score(true_labels, prediction, average='binary')
                 else:
-                    cluster_predictions = svm_trainer.predict(
-                        cluster_id,
-                        X_test_cluster,
-                        use_sparse=(args.svm_type == 'libsvm')
-                    )
-                predict_time = time.time() - predict_start_time
-                total_predict_time += predict_time
-                
-                # Store predictions and true labels for overall metrics
-                all_predictions.extend(cluster_predictions)
-                all_true_labels.extend(y_test_cluster)
-                total_test_samples += len(y_test_cluster)
-                
-                # Calculate metrics and log results
-                logger.info(f"\nCluster {cluster_id} Testing:")
-                logger.info(f"Test samples: {len(y_test_cluster)}")
-                
-                if args.type == 'clf':
-                    from sklearn.metrics import accuracy_score, f1_score
-                    accuracy = accuracy_score(y_test_cluster, cluster_predictions)
-                    if len(np.unique(y_test_cluster)) == 2:
-                        f1 = f1_score(y_test_cluster, cluster_predictions, average='binary')
-                    else:
-                        f1 = f1_score(y_test_cluster, cluster_predictions, average='weighted')
-                    logger.info(f"Accuracy: {accuracy:.4f}, F1 Score: {f1:.4f}")
-                    cluster_metrics[cluster_id] = {'accuracy': accuracy, 'f1': f1}
-                else:
-                    from sklearn.metrics import mean_squared_error, r2_score
-                    mse = mean_squared_error(y_test_cluster, cluster_predictions)
-                    rmse = np.sqrt(mse)
-                    r2 = r2_score(y_test_cluster, cluster_predictions)
-                    logger.info(f"MSE: {mse:.4f}, RMSE: {rmse:.4f}, R²: {r2:.4f}")
-                    cluster_metrics[cluster_id] = {'mse': mse, 'rmse': rmse, 'r2': r2}
-                
-                logger.info(f"Prediction time: {predict_time:.2f} seconds")
-                
-            except Exception as e:
-                logger.error(f"Testing failed for cluster {cluster_id}: {str(e)}")
-                continue
+                    f1 = f1_score(true_labels, prediction, average='weighted')
+                logger.info(f"Accuracy: {accuracy:.4f}, F1 Score: {f1:.4f}")
+                cluster_metrics[cluster_id] = {'accuracy': accuracy, 'f1': f1}
+                logger.info(f"Cluster {cluster_id} Test samples: {len(prediction)}, Accuracy: {accuracy:.4f}, F1 Score: {f1:.4f}")
+            else:
+                from sklearn.metrics import mean_squared_error, r2_score
+                mse = mean_squared_error(true_labels, prediction)
+                rmse = np.sqrt(mse)
+                r2 = r2_score(true_labels, prediction)
+                logger.info(f"MSE: {mse:.4f}, RMSE: {rmse:.4f}, R²: {r2:.4f}")
+                cluster_metrics[cluster_id] = {'mse': mse, 'rmse': rmse, 'r2': r2}
+                logger.info(f"Cluster {cluster_id} Test samples: {len(prediction)}, MSE: {mse:.4f}, RMSE: {rmse:.4f}, R²: {r2:.4f}")
         
-        test_time = time.time() - test_start_time
-        logger.info(f"\nTotal SVM testing time: {test_time:.2f} seconds")
+        svm_time = time.time() - svm_start_time
+        total_time = time.time() - total_start_time
+
         # Calculate and log overall metrics
-        logger.info("\n=== Overall Test Results ===")
+        logger.info("=== Overall Test Results ===")
         logger.info(f"Total test samples: {total_test_samples}")
-        logger.info(f"Average prediction time per cluster: {total_predict_time/len(processed_clusters):.2f} seconds")
-        
         if args.type == 'clf':
             overall_accuracy = accuracy_score(all_true_labels, all_predictions)
             if len(np.unique(all_true_labels)) == 2:
                 overall_f1 = f1_score(all_true_labels, all_predictions, average='binary')
             else:
                 overall_f1 = f1_score(all_true_labels, all_predictions, average='weighted')
-            
-            # Calculate average cluster metrics
-            avg_cluster_accuracy = np.mean([m['accuracy'] for m in cluster_metrics.values()])
-            avg_cluster_f1 = np.mean([m['f1'] for m in cluster_metrics.values()])
-            
-            logger.info("\nCluster-wise averages:")
-            logger.info(f"Average Accuracy: {avg_cluster_accuracy:.4f}")
-            logger.info(f"Average F1 Score: {avg_cluster_f1:.4f}")
-            
-            logger.info("\nOverall metrics:")
             logger.info(f"Overall Accuracy: {overall_accuracy:.4f}")
             logger.info(f"Overall F1 Score: {overall_f1:.4f}")
         else:  # regression task
@@ -635,32 +647,12 @@ def main():
             overall_rmse = np.sqrt(overall_mse)
             overall_r2 = r2_score(all_true_labels, all_predictions)
             
-            # Calculate average cluster metrics
-            avg_cluster_mse = np.mean([m['mse'] for m in cluster_metrics.values()])
-            avg_cluster_rmse = np.mean([m['rmse'] for m in cluster_metrics.values()])
-            avg_cluster_r2 = np.mean([m['r2'] for m in cluster_metrics.values()])
-            
-            # Log results in same format as classification
-            logger.info("\nCluster-wise averages:")
-            logger.info(f"Average MSE: {avg_cluster_mse:.4f}")
-            logger.info(f"Average RMSE: {avg_cluster_rmse:.4f}")
-            logger.info(f"Average R² Score: {avg_cluster_r2:.4f}")
-            
-            logger.info("\nOverall metrics:")
             logger.info(f"Overall MSE: {overall_mse:.4f}")
             logger.info(f"Overall RMSE: {overall_rmse:.4f}")
             logger.info(f"Overall R² Score: {overall_r2:.4f}")
         
-        
-        
-        svm_time = time.time() - svm_start_time
-        logger.info(f"\nTotal SVM processing time: {svm_time:.2f} seconds")
-        logger.info(f"  Training time: {train_time:.2f} seconds")
-        logger.info(f"  Testing time: {test_time:.2f} seconds")
-        total_time = time.time() - total_start_time
-        
         # Update timing summary
-        logger.info("\n=== Timing Summary ===")
+        logger.info("=== Timing Summary ===")
         logger.info(f"Loading training data: {load_train_time:.2f} seconds")
         logger.info(f"Loading test data: {load_test_time:.2f} seconds")
         logger.info(f"Data normalization: {norm_time:.2f} seconds")
@@ -668,13 +660,19 @@ def main():
             logger.info(f"Clustering: {cluster_time:.2f} seconds")
         if args.balance_data:
             logger.info(f"Data balancing: {balance_time:.2f} seconds")
+        if args.independence_check:
+            logger.info(f"Independence checking: {independence_time:.2f} seconds")
+        if args.feature_construction:
+            logger.info(f"Feature construction: {feature_construction_time:.2f} seconds")
         if args.feature_processing:
             logger.info(f"Feature processing: {feature_process_time:.2f} seconds")
-        if args.tune_hyperparams:
-            logger.info(f"Hyperparameter tuning: {tuning_time:.2f} seconds")
+        
         logger.info(f"SVM processing: {svm_time:.2f} seconds")
+        if args.tune_hyperparams:
+            logger.info(f"  Hyperparameter tuning: {tuning_time:.2f} seconds")
         logger.info(f"  Training time: {train_time:.2f} seconds")
         logger.info(f"  Testing time: {test_time:.2f} seconds")
+        logger.info(f"      Prediction time: {predict_time:.2f} seconds")
         logger.info(f"Total execution time: {total_time:.2f} seconds")
         logger.info(f"Finished at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
             

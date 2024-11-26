@@ -111,32 +111,34 @@ class SVMTrainer:
         return results
     
     def predict(self,
-               cluster_id: int,
-               X: scipy.sparse.csr_matrix,
-               use_sparse: bool = True) -> np.ndarray:
+               cluster: Dict[int, Tuple[scipy.sparse.csr_matrix, np.ndarray, list]],
+               use_sparse: bool = True) -> Dict[int, np.ndarray]:
         """
         Make predictions using trained model for a specific cluster
         
         Args:
-            cluster_id: Cluster identifier
-            X: Test data
+            cluster: Dictionary of cluster data {cluster_id: (X, y, feature_indices)}
             use_sparse: Whether to use sparse format
             
         Returns:
             Predictions
         """
-        if cluster_id not in self.models:
-            raise ValueError(f"No trained model found for cluster {cluster_id}")
+        predictions = {}
+        for cluster_id, (X, _, _) in cluster.items():
+            if cluster_id not in self.models:
+                raise ValueError(f"No trained model found for cluster {cluster_id}")
             
-        try:
-            if not use_sparse or self.svm_type == 'thundersvm':
-                X = X.toarray()
+            try:
+                if not use_sparse or self.svm_type == 'thundersvm':
+                    X = X.toarray()
             
-            return self.models[cluster_id].predict(X)
+                predictions[cluster_id] = self.models[cluster_id].predict(X)
             
-        except Exception as e:
-            self.logger.error(f"Prediction failed for cluster {cluster_id}: {str(e)}")
-            raise
+            except Exception as e:
+                self.logger.error(f"Prediction failed for cluster {cluster_id}: {str(e)}")
+                raise
+        
+        return predictions
     
     def get_model(self, cluster_id: int) -> Any:
         """Get trained model for a specific cluster"""
@@ -213,10 +215,7 @@ class SVMTrainer:
         
         results = {}
         
-        # Process batches in parallel
-        from concurrent.futures import ProcessPoolExecutor, as_completed
-        
-        with ProcessPoolExecutor(max_workers=n_jobs) as executor:
+        with ThreadPoolExecutor(max_workers=n_jobs) as executor:
             future_to_batch = {
                 executor.submit(self._train_batch, batch, use_sparse): batch 
                 for batch in batches
@@ -289,63 +288,62 @@ class SVMTrainer:
             raise
     
     def predict_parallel(self,
-                        cluster_id: int,
-                        X: scipy.sparse.csr_matrix,
+                        clusters: Dict[int, Tuple[scipy.sparse.csr_matrix, np.ndarray, list]],
                         use_sparse: bool = True,
-                        n_jobs: int = -1) -> np.ndarray:
+                        n_jobs: int = -1) -> Dict[int, np.ndarray]:
         """
         Make predictions using trained model for a specific cluster with parallel processing
         
         Args:
-            cluster_id: Cluster identifier
-            X: Test data
+            cluster: Dictionary of cluster data {cluster_id: (X, y, feature_indices)}
             use_sparse: Whether to use sparse format
             n_jobs: Number of parallel jobs (-1 for all CPUs)
             
         Returns:
             Predictions
         """
-        if cluster_id not in self.models:
-            raise ValueError(f"No trained model found for cluster {cluster_id}")
-        
-        # Determine number of workers
-        if n_jobs < 0:
-            import multiprocessing
-            n_jobs = multiprocessing.cpu_count()
-        
         try:
+            predictions = {}
+            for cluster_id, (X, _, _) in clusters.items():
+                if cluster_id not in self.models:
+                    raise ValueError(f"No trained model found for cluster {cluster_id}")
+            
+            # Determine number of workers
+            if n_jobs < 0:
+                import multiprocessing
+                n_jobs = min(multiprocessing.cpu_count(), len(clusters))
+            else:
+                n_jobs = min(n_jobs, len(clusters))
+        
+        
             # Convert data format if needed
             if not use_sparse or self.svm_type == 'thundersvm':
                 X = X.toarray()
             
-            # Split data into chunks for parallel processing
-            n_samples = X.shape[0]
-            chunk_size = max(1, n_samples // n_jobs)
-            chunks = [(i, min(i + chunk_size, n_samples)) 
-                     for i in range(0, n_samples, chunk_size)]
+            # Split clusters into batches
+            cluster_items = list(clusters.items())
+            batch_size = max(1, len(cluster_items) // n_jobs)
+            batches = [
+                dict(cluster_items[i:i + batch_size])
+                for i in range(0, len(cluster_items), batch_size)
+            ]
             
-            self.logger.info(f"Predicting with {len(chunks)} chunks using {n_jobs} workers")
+            self.logger.info(f"Predicting with {n_jobs} workers")
             
             # Make predictions in parallel
             with ThreadPoolExecutor(max_workers=n_jobs) as executor:
-                future_to_chunk = {
-                    executor.submit(
-                        self._predict_chunk,
-                        X[start:end],
-                        cluster_id
-                    ): (start, end) for start, end in chunks
+                future_to_batch = {
+                    executor.submit(self._predict_batch, batch, use_sparse): batch 
+                    for batch in batches
                 }
-                
-                # Collect results
-                predictions = np.zeros(n_samples)
-                for future in as_completed(future_to_chunk):
-                    start, end = future_to_chunk[future]
+            
+                for future in as_completed(future_to_batch):
                     try:
-                        chunk_predictions = future.result()
-                        predictions[start:end] = chunk_predictions
+                        batch_results = future.result()
+                        predictions.update(batch_results)
                     except Exception as e:
-                        self.logger.error(f"Prediction failed for chunk {start}:{end}: {str(e)}")
-                        raise
+                        self.logger.error(f"Batch processing failed: {str(e)}")
+                        continue
             
             return predictions
             
@@ -353,17 +351,9 @@ class SVMTrainer:
             self.logger.error(f"Parallel prediction failed for cluster {cluster_id}: {str(e)}")
             raise
     
-    def _predict_chunk(self,
-                      X: Union[np.ndarray, scipy.sparse.csr_matrix],
-                      cluster_id: int) -> np.ndarray:
-        """
-        Predict on a chunk of data
-        
-        Args:
-            X: Chunk of test data
-            cluster_id: Cluster identifier
-            
-        Returns:
-            Predictions for the chunk
-        """
-        return self.models[cluster_id].predict(X)
+    def _predict_batch(self, batch_clusters, use_sparse: bool = True):
+        """Make predictions for a batch of clusters"""
+        predictions = {}
+        for cluster_id, (X, _, _) in batch_clusters.items():
+            predictions[cluster_id] = self.models[cluster_id].predict(X)
+        return predictions

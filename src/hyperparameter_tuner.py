@@ -119,7 +119,7 @@ class SVMHyperparameterTuner:
             return 1
         else:
             # Round to nearest integer
-            return round(cpu_count / tuning_jobs)
+            return round(cpu_count / tuning_jobs) - 1
     
     def calculate_parallel_tuning_jobs(self, n_clusters: int) -> int:
         """Calculate optimal number of parallel jobs for tuning multiple clusters
@@ -290,10 +290,12 @@ class SVMHyperparameterTuner:
                 estimator = SVC()
                 min_samples = self._get_min_samples_per_class(y)
                 cv_folds = max(2, min(self.cv_folds, min_samples))
+                self.logger.debug(f"Adjusted cv_folds to {cv_folds} due to minimum class samples")
                 self.cv = StratifiedKFold(n_splits=cv_folds, shuffle=True, random_state=self.random_state)
             else:
                 estimator = SVR()
                 cv_folds = max(2, min(self.cv_folds, X.shape[0] // 2))
+                self.logger.debug(f"Adjusted cv_folds to {cv_folds} due to dataset size")
                 self.cv = KFold(n_splits=cv_folds, shuffle=True, random_state=self.random_state)
             
             # Perform optimization

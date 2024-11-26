@@ -12,8 +12,10 @@ A Python tool for automated SVM analysis with clustering and feature processing.
 
 ### 2. Clustering Methods (Optional)
 - **K-means Clustering**
-  - Automatic k selection using silhouette or GAP method, (sample for large dataset)
+  - Automatic k selection using silhouette or GAP method
+  - parallel computation (optional)
   - Support for fixed k value
+  - TODO: select some features for clustering
 - **Random Clustering**
   - Fixed k value required
   - Random assignment of data points
@@ -21,7 +23,9 @@ A Python tool for automated SVM analysis with clustering and feature processing.
   - Fixed k value required
   - Sequential assignment of data points
 
-### 3. Feature Processing (Optional)
+### 3. Feature Processing (parallel computation optional)
+- **Feature Independence Check selection**
+  - Check the independence score of features
 - **Feature Construction**
   - Standardization of original features
   - Feature discretization
@@ -29,23 +33,17 @@ A Python tool for automated SVM analysis with clustering and feature processing.
   - Statistical features
 - **Feature Selection**
   - Mutual Information feature selection
-  - QBSOFS (Quantum-Behaved Particle Swarm Optimization)
+  - QBSOFS (BSO with Q-Learning)
   - Non-zero ratio filtering
-- **Parallel Feature Processing**
-  - Enable parallel feature processing
-  - Number of parallel jobs for feature processing (-1 for all CPUs)
 
 ### 4. Data Balancing (Optional)
 - **Enable data balancing for classification tasks**
 - **Minimum ratio required for each class (relative to majority class)**
 - **Maximum samples to add per class**
 
-### 5. SVM Training
+### 5. SVM Training (parallel computation optional)
 - Support for both LibSVM and ThunderSVM
 - Classification and regression tasks
-- Sparse data optimization
-- Individual model for each cluster
-- Optional parallel training with multi-threading
 - Optional hyperparameter tuning with multiple optimizers:
   - Random Search
   - Grid Search
