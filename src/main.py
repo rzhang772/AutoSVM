@@ -16,6 +16,7 @@ import multiprocessing
 import psutil
 from feature_independence import FeatureIndependenceChecker
 from hyperparameter_tuner import SVMHyperparameterTuner
+from cluster_feature_selector import ClusterFeatureSelector
 
 # Configuration constants
 K_MIN = 5
@@ -62,6 +63,10 @@ def main():
     # Clustering arguments
     parser.add_argument('--clustering', action='store_true',
                       help='Enable clustering')
+    parser.add_argument('--entropy-selection', action='store_true',
+                      help='Enable entropy-based feature selection')
+    parser.add_argument('--entropy-ratio', type=float, default=0.3,
+                      help='Ratio of features to select based on entropy')
     parser.add_argument('--algorithm', type=str, default='kmeans',
                       choices=['kmeans', 'random', 'fifo'],
                       help='Clustering algorithm')
@@ -260,6 +265,12 @@ def main():
         if args.clustering:
             logger.info("Starting clustering...")
             cluster_start = time.time()
+            if args.entropy_selection:
+                selector = ClusterFeatureSelector(select_ratio=args.entropy_ratio, logger=logger)
+                X_train_normalized_selected, _ = selector.fit_transform(X_train_normalized)  
+            else:
+                X_train_normalized_selected = X_train_normalized
+            
             # Initialize clusterer with main logger
             clusterer = SVMCluster(
                 sample_ratio=SAMPLE_RATIO,
@@ -267,7 +278,7 @@ def main():
                 logger=logger  # Pass the main logger
             )
             best_k, results, labels, _ = clusterer.fit_predict(
-                X_train_normalized,
+                X_train_normalized_selected,
                 k=args.k,
                 k_range=range(K_MIN, K_MAX + 1) if args.k is None else None,
                 method=args.method,
@@ -548,7 +559,12 @@ def main():
         logger.info("Clustering test data...")
         cluster_assign_start = time.time()
         if args.clustering:
-            test_labels = clusterer.predict(X_test_normalized)
+            if args.entropy_selection:
+                selector = ClusterFeatureSelector(select_ratio=args.entropy_ratio, logger=logger)
+                X_test_normalized_selected, _ = selector.fit_transform(X_test_normalized)  
+            else:
+                X_test_normalized_selected = X_test_normalized
+            test_labels = clusterer.predict(X_test_normalized_selected)
         else:
             # If clustering is disabled, assign all test data to cluster 0
             test_labels = np.zeros(X_test_normalized.shape[0], dtype=int)
