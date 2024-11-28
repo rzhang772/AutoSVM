@@ -70,8 +70,7 @@ class SVMTrainer:
         results = {}
         
         for cluster_id, (X, y, selected_features) in processed_clusters.items():
-            self.logger.debug(f"\nTraining SVM for cluster {cluster_id}")
-            self.logger.debug(f"Data shape: {X.shape}")
+            self.logger.debug(f"\nTraining SVM for cluster {cluster_id}, Data shape: {X.shape}")
             
             try:
                 # Convert data format if needed

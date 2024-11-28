@@ -53,38 +53,56 @@ class SVMHyperparameterTuner:
             'n_points': 7  # for grid search
         }
         gamma_range = {
-            'min': 1e-4,
+            'min': 1e-5,
             'max': 1e1,
-            'n_points': 6  # for grid search
+            'n_points': 10  # for grid search
         }
-        
+        coef0_range = {
+            'min': 0.0,
+            'max': 1.0
+        }
+        epsilon_range = {
+            'min': 0.01,
+            'max': 5.0,
+            'n_points': 15
+        }
         # Grid search space
         self.grid_space = {
             'C': np.logspace(np.log10(C_range['min']), np.log10(C_range['max']), C_range['n_points']),
             'gamma': np.logspace(np.log10(gamma_range['min']), np.log10(gamma_range['max']), gamma_range['n_points']),
-            'kernel': ['rbf', 'linear']
+            'kernel': ['rbf', 'linear', 'poly', 'sigmoid']
         }
         
         # Random search space
         self.random_space = {
             'C': loguniform(1e-3, 1e3),
             'gamma': loguniform(1e-4, 1e1),
-            'kernel': ['rbf', 'linear']
+            'kernel': ['rbf', 'linear', 'poly', 'sigmoid']
         }
         
         # Bayesian optimization space
         self.bayes_space = {
             'C': (1e-3, 1e3, 'log-uniform'),
             'gamma': (1e-4, 1e1, 'log-uniform'),
-            'kernel': ['rbf', 'linear']
+            'kernel': ['rbf', 'linear', 'poly', 'sigmoid'],
+            'decision_function_shape': ['ovr', 'ovo'],
         }
+        # if 'poly' in self.bayes_space['kernel'] or 'sigmoid' in self.bayes_space['kernel']:
+        #     self.bayes_space['coef0'] = (coef0_range['min'], coef0_range['max'], 'uniform')
+        # if self.task_type == 'reg':
+        #     self.bayes_space['epsilon'] = (epsilon_range['min'], epsilon_range['max'], 'uniform')
         
         # TPE space
         self.tpe_space = {
             'C': hp.loguniform('C', np.log(1e-3), np.log(1e3)),
             'gamma': hp.loguniform('gamma', np.log(1e-4), np.log(1e1)),
-            'kernel': hp.choice('kernel', ['rbf', 'linear'])
+            'kernel': hp.choice('kernel', ['rbf', 'linear', 'poly', 'sigmoid']),
+            'decision_function_shape': hp.choice('decision_function_shape', ['ovr', 'ovo']),
         }
+        # if 'poly' in self.tpe_space['kernel'] or 'sigmoid' in self.tpe_space['kernel']:
+        #     self.tpe_space['coef0'] = hp.uniform('coef0', coef0_range['min'], coef0_range['max'])
+        # if self.task_type == 'reg':
+        #     self.tpe_space['epsilon'] = hp.uniform('epsilon', epsilon_range['min'], epsilon_range['max'])
         
         # Add epsilon parameter for regression
         if self.task_type == 'reg':
@@ -199,7 +217,7 @@ class SVMHyperparameterTuner:
         try:
             # Convert kernel choice index to string for TPE
             if 'kernel' in params:
-                kernel_choices = ['rbf', 'linear']
+                kernel_choices = ['rbf', 'linear', 'poly', 'sigmoid']
                 params['kernel'] = kernel_choices[params['kernel']]
             
             # Log current parameters being evaluated

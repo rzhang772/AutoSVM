@@ -43,12 +43,14 @@ class ClusterFeatureSelector:
             
             # Select top features based on entropy
             n_features_to_select = int(np.ceil(X.shape[1] * self.select_ratio))
-            self.selected_features_ = np.argsort(entropies)[-n_features_to_select:]
+            # self.selected_features_ = np.argsort(entropies)[-n_features_to_select:]
+            self.selected_features_ = np.argsort(entropies)[:n_features_to_select]
             
             # Select features
             X_selected = X[:, self.selected_features_]
             
             self.logger.info(f"Selected {len(self.selected_features_)} features based on entropy")
+            self.logger.debug(f"Selected feature indices: {self.selected_features_}")
             return X_selected, self.selected_features_.tolist()
             
         except Exception as e:

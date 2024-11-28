@@ -516,6 +516,8 @@ def main():
         # Train models for each cluster
         logger.info("\n=== SVM Training ===")
         train_start_time = time.time()
+
+        
         
         if args.parallel_train:
             logger.info("Using parallel training")
@@ -560,11 +562,12 @@ def main():
         cluster_assign_start = time.time()
         if args.clustering:
             if args.entropy_selection:
-                selector = ClusterFeatureSelector(select_ratio=args.entropy_ratio, logger=logger)
-                X_test_normalized_selected, _ = selector.fit_transform(X_test_normalized)  
+                X_test_normalized_selected = selector.transform(X_test_normalized)  
             else:
                 X_test_normalized_selected = X_test_normalized
+            logger.debug(f"Selected test data features: {X_test_normalized_selected.shape[1]}")
             test_labels = clusterer.predict(X_test_normalized_selected)
+            logger.debug(f"Test data cluster labels size: {len(test_labels)}")
         else:
             # If clustering is disabled, assign all test data to cluster 0
             test_labels = np.zeros(X_test_normalized.shape[0], dtype=int)
@@ -594,6 +597,11 @@ def main():
             # other feature processing is not needed for test data
             logger.info("Mutual and qbsofs test data...")
             test_clusters = feature_processor.transform(test_clusters)
+        
+
+        for cluster_id, (X_cluster, y_cluster, feat) in processed_clusters.items():
+            logger.debug(f"training Cluster {cluster_id} features: {feat}")
+            logger.debug(f"test Cluster {cluster_id} features: {test_clusters[cluster_id][2]}")
 
         # predict and evaluate
         logger.info("predicting...")
@@ -638,7 +646,7 @@ def main():
                     f1 = f1_score(true_labels, prediction, average='binary')
                 else:
                     f1 = f1_score(true_labels, prediction, average='weighted')
-                logger.info(f"Accuracy: {accuracy:.4f}, F1 Score: {f1:.4f}")
+                # logger.info(f"Accuracy: {accuracy:.4f}, F1 Score: {f1:.4f}")
                 cluster_metrics[cluster_id] = {'accuracy': accuracy, 'f1': f1}
                 logger.info(f"Cluster {cluster_id} Test samples: {len(prediction)}, Accuracy: {accuracy:.4f}, F1 Score: {f1:.4f}")
             else:
@@ -646,7 +654,7 @@ def main():
                 mse = mean_squared_error(true_labels, prediction)
                 rmse = np.sqrt(mse)
                 r2 = r2_score(true_labels, prediction)
-                logger.info(f"MSE: {mse:.4f}, RMSE: {rmse:.4f}, R²: {r2:.4f}")
+                # logger.info(f"MSE: {mse:.4f}, RMSE: {rmse:.4f}, R²: {r2:.4f}")
                 cluster_metrics[cluster_id] = {'mse': mse, 'rmse': rmse, 'r2': r2}
                 logger.info(f"Cluster {cluster_id} Test samples: {len(prediction)}, MSE: {mse:.4f}, RMSE: {rmse:.4f}, R²: {r2:.4f}")
         

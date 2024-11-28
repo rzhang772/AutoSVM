@@ -56,10 +56,10 @@ class DataBalancer:
             majority_count = max(class_counts.values())
             
             # Log original distribution at debug level
-            self.logger.debug("Original class distribution:")
-            for label, count in class_counts.items():
-                ratio = count / majority_count
-                self.logger.debug(f"Class {label}: {count} samples ({ratio:.2%} of majority)")
+            # self.logger.debug("Original class distribution:")
+            # for label, count in class_counts.items():
+            #     ratio = count / majority_count
+            #     self.logger.debug(f"Class {label}: {count} samples ({ratio:.2%} of majority)")
             
             # Identify underrepresented classes
             underrep_classes = {
@@ -121,7 +121,7 @@ class DataBalancer:
                 additional_X.append(X_full[selected_indices])
                 additional_y.extend([label] * samples_to_add)
                 
-                self.logger.debug(f"Added {samples_to_add} samples for class {label}")
+                # self.logger.debug(f"Added {samples_to_add} samples for class {label}")
             
             if additional_X:
                 # Combine original and additional samples
@@ -131,10 +131,10 @@ class DataBalancer:
                 # Log final distribution at debug level
                 new_counts = Counter(y_balanced)
                 new_majority_count = max(new_counts.values())
-                self.logger.debug("\nFinal class distribution:")
-                for label, count in new_counts.items():
-                    ratio = count / new_majority_count
-                    self.logger.debug(f"Class {label}: {count} samples ({ratio:.2%} of majority)")
+                # self.logger.debug("\nFinal class distribution:")
+                # for label, count in new_counts.items():
+                #     ratio = count / new_majority_count
+                #     self.logger.debug(f"Class {label}: {count} samples ({ratio:.2%} of majority)")
                 
                 self.logger.info(f"Cluster {cluster_id} balanced: {len(y_cluster)} -> {len(y_balanced)} samples")
                 balanced_clusters[cluster_id] = (X_balanced, y_balanced, selected_features)
