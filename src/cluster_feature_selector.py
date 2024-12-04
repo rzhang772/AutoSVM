@@ -19,7 +19,7 @@ class ClusterFeatureSelector:
         self.logger = logger or logging.getLogger('cluster_feature_selector')
         self.selected_features_ = None  # Store selected feature indices
     
-    def fit_transform(self, X: scipy.sparse.csr_matrix) -> Tuple[scipy.sparse.csr_matrix, List[int]]:
+    def fit_transform(self, X: scipy.sparse.csr_matrix, select_strategy = 'bottom') -> Tuple[scipy.sparse.csr_matrix, List[int]]:
         """
         Fit the selector on data and transform it
         
@@ -43,8 +43,12 @@ class ClusterFeatureSelector:
             
             # Select top features based on entropy
             n_features_to_select = int(np.ceil(X.shape[1] * self.select_ratio))
-            # self.selected_features_ = np.argsort(entropies)[-n_features_to_select:]
-            self.selected_features_ = np.argsort(entropies)[:n_features_to_select]
+            if select_strategy == 'top':
+                self.selected_features_ = np.argsort(entropies)[-n_features_to_select:]
+            elif select_strategy == 'bottom':
+                self.selected_features_ = np.argsort(entropies)[:n_features_to_select]
+            else:
+                raise ValueError(f"Invalid select_strategy: {select_strategy}")
             
             # Select features
             X_selected = X[:, self.selected_features_]

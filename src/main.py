@@ -17,11 +17,13 @@ import psutil
 from feature_independence import FeatureIndependenceChecker
 from hyperparameter_tuner import SVMHyperparameterTuner
 from cluster_feature_selector import ClusterFeatureSelector
+from cascade_cluster import CascadeCluster
+import pandas as pd
 
 # Configuration constants
 K_MIN = 5
-K_MAX = 10
-ENABLE_SAMPLING = False  # Control whether to enable sampling
+K_MAX = 200
+ENABLE_SAMPLING = True  # Control whether to enable sampling
 SAMPLE_RATIO = 0.1     # Sampling ratio
 
 def normalize_sparse_data(X: scipy.sparse.csr_matrix) -> scipy.sparse.csr_matrix:
@@ -63,6 +65,8 @@ def main():
     # Clustering arguments
     parser.add_argument('--clustering', action='store_true',
                       help='Enable clustering')
+    parser.add_argument('--cascade', action='store_true',
+                        help='Enable cascade clustering')
     parser.add_argument('--entropy-selection', action='store_true',
                       help='Enable entropy-based feature selection')
     parser.add_argument('--entropy-ratio', type=float, default=0.3,
@@ -119,7 +123,7 @@ def main():
                       help='Hyperparameter optimization strategy')
     parser.add_argument('--n-iter', type=int, default=10,
                       help='Number of parameter settings sampled')
-    parser.add_argument('--cv-folds', type=int, default=3,
+    parser.add_argument('--cv-folds', type=int, default=10,
                       help='Number of cross-validation folds')
     parser.add_argument('--parallel-tuning', action='store_true',
                       help='Enable parallel hyperparameter tuning')
@@ -172,6 +176,7 @@ def main():
     logger.info("Clustering Configuration:")
     logger.info(f"  Clustering enabled: {args.clustering}")
     if args.clustering:
+        logger.info(f"  Cascade clustering: {args.cascade}")
         logger.info(f"  Algorithm: {args.algorithm}")
         if args.algorithm == 'kmeans':
             logger.info(f"  Method: {args.method}")
@@ -253,11 +258,15 @@ def main():
             return 1
         
         # Normalize data
-        logger.info("Normalizing training data using L2 normalization...")
         norm_start = time.time()
-        normalizer = DataNormalizer(norm='l2', logger=logger)
-        X_train_normalized = normalizer.fit_transform(X_train)
-        
+        # normalize on axis=1 is right, because Each sample (row) is scaled independently. 
+        # This is often desirable because SVMs rely on the distance between samples 
+        # in feature space, 
+        # and row-wise normalization ensures that no sample has disproportionately 
+        # large magnitude due to its feature values.
+        X_train_normalized = normalize_sparse_data(X_train)
+        X_test_normalized = normalize_sparse_data(X_test)
+
         norm_time = time.time() - norm_start
         logger.info(f"Data normalization completed in {norm_time:.2f} seconds")
         
@@ -265,52 +274,70 @@ def main():
         if args.clustering:
             logger.info("Starting clustering...")
             cluster_start = time.time()
-            if args.entropy_selection:
-                selector = ClusterFeatureSelector(select_ratio=args.entropy_ratio, logger=logger)
-                X_train_normalized_selected, _ = selector.fit_transform(X_train_normalized)  
-            else:
-                X_train_normalized_selected = X_train_normalized
+            # if args.entropy_selection:
+            #     selector = ClusterFeatureSelector(select_ratio=args.entropy_ratio, logger=logger)
+            #     X_train_normalized_selected, _ = selector.fit_transform(X_train_normalized, select_strategy='bottom')  
+            # else:
+            #     X_train_normalized_selected = X_train_normalized
             
-            # Initialize clusterer with main logger
-            clusterer = SVMCluster(
-                sample_ratio=SAMPLE_RATIO,
-                enable_sampling=ENABLE_SAMPLING,
-                logger=logger  # Pass the main logger
-            )
-            best_k, results, labels, _ = clusterer.fit_predict(
-                X_train_normalized_selected,
-                k=args.k,
-                k_range=range(K_MIN, K_MAX + 1) if args.k is None else None,
-                method=args.method,
-                algorithm=args.algorithm,
-                parallel=args.parallel_cluster,  # Use clustering-specific parallel parameter
-                n_jobs=args.cluster_jobs       # Use clustering-specific jobs parameter
-            )
+            # # Initialize clusterer with main logger
+            # clusterer = SVMCluster(
+            #     sample_ratio=SAMPLE_RATIO,
+            #     enable_sampling=ENABLE_SAMPLING,
+            #     logger=logger  # Pass the main logger
+            # )
+            # best_k, results, labels, _ = clusterer.fit_predict(
+            #     X_train_normalized_selected,
+            #     k=args.k,
+            #     k_range=range(K_MIN, K_MAX + 1) if args.k is None else None,
+            #     method=args.method,
+            #     algorithm=args.algorithm,
+            #     parallel=args.parallel_cluster,  # Use clustering-specific parallel parameter
+            #     n_jobs=args.cluster_jobs       # Use clustering-specific jobs parameter
+            # )
+            # cascade clustering
+            logger.info("Starting cascade clustering...")
+            cluster_start = time.time()
+            cascade_cluster = CascadeCluster(args.cascade,
+                                             args.entropy_selection, 
+                                             args.entropy_ratio, 
+                                             args.k, 
+                                                K_MIN,
+                                                K_MAX,
+                                             args.method, 
+                                             args.algorithm, 
+                                             args.parallel_cluster, 
+                                             args.cluster_jobs, 
+                                             logger)
+            labels, df_labels = cascade_cluster.fit_predict(X_train_normalized, max_cluster_ratio=0.3)
             cluster_time = time.time() - cluster_start
+
             logger.info(f"Clustering completed in {cluster_time:.2f} seconds")
             
             # Log cluster sizes
             unique_labels, cluster_sizes = np.unique(labels, return_counts=True)
-            logger.debug("\nCluster size distribution:")
+            # df_labels['cluster_size'] = cluster_sizes
+
+            logger.debug(f"\nCluster size distribution:")
             for label, size in zip(unique_labels, cluster_sizes):
                 logger.debug(f"Cluster {label}: {size} samples ({size/len(labels)*100:.2f}%)")
+
+            # # Save scores for k results
+            # if args.clustering and args.algorithm == 'kmeans' and args.k is None:
+            #     save_start = time.time()
+            #     clusterer.save_results(
+            #         os.path.basename(args.train),
+            #         best_k,
+            #         results,
+            #         args.method
+            #     )
+            #     save_time = time.time() - save_start
+            #     logger.info(f"Results for k scores saved in {save_time:.2f} seconds")
             
-            # Save scores for k results
-            if args.clustering and args.algorithm == 'kmeans' and args.k is None:
-                save_start = time.time()
-                clusterer.save_results(
-                    os.path.basename(args.train),
-                    best_k,
-                    results,
-                    args.method
-                )
-                save_time = time.time() - save_start
-                logger.info(f"Results for k scores saved in {save_time:.2f} seconds")
-            
-            # Validate clustering results
-            if len(np.unique(labels)) != best_k:
-                logger.warning(f"Actual number of clusters {len(np.unique(labels))} " 
-                             f"differs from expected {best_k}")
+            # # Validate clustering results
+            # if len(np.unique(labels)) != best_k:
+            #     logger.warning(f"Actual number of clusters {len(np.unique(labels))} " 
+            #                  f"differs from expected {best_k}")
         else:
             # If clustering is not enabled, use the entire dataset as a single cluster
             labels = np.zeros(X_train_normalized.shape[0], dtype=int)
@@ -468,6 +495,7 @@ def main():
                 optimizer=args.optimizer,
                 n_iter=args.n_iter,
                 cv=args.cv_folds,
+                logger=logger,
                 random_state=42
             )
             
@@ -553,21 +581,19 @@ def main():
         logger.info("\n=== SVM Testing ===")
         test_start_time = time.time()
 
-        # Normalize test data
-        logger.info("Normalizing test data...")
-        X_test_normalized = normalizer.transform(X_test)
-        
         # Cluster test data
         logger.info("Clustering test data...")
         cluster_assign_start = time.time()
         if args.clustering:
-            if args.entropy_selection:
-                X_test_normalized_selected = selector.transform(X_test_normalized)  
-            else:
-                X_test_normalized_selected = X_test_normalized
-            logger.debug(f"Selected test data features: {X_test_normalized_selected.shape[1]}")
-            test_labels = clusterer.predict(X_test_normalized_selected)
-            logger.debug(f"Test data cluster labels size: {len(test_labels)}")
+            # if args.entropy_selection:
+            #     X_test_normalized_selected = selector.transform(X_test_normalized)  
+            # else:
+            #     X_test_normalized_selected = X_test_normalized
+            # logger.debug(f"Selected test data features: {X_test_normalized_selected.shape[1]}")
+            # test_labels = clusterer.predict(X_test_normalized_selected)
+
+            test_labels, df_test_labels = cascade_cluster.predict(X_test_normalized)
+            logger.debug(f"Test data cluster labels: {np.unique(test_labels)}")
         else:
             # If clustering is disabled, assign all test data to cluster 0
             test_labels = np.zeros(X_test_normalized.shape[0], dtype=int)

@@ -122,13 +122,13 @@ class SVMCluster:
     def preprocess_data(self, X: scipy.sparse.csr_matrix) -> scipy.sparse.csr_matrix:
         """Preprocess data for clustering"""
         # Sample large datasets if sampling is enabled
-        if self.enable_sampling and X.shape[0] > 100000:
+        if self.enable_sampling and X.shape[0] > 1000000:
             sample_size = int(X.shape[0] * self.sample_ratio)
             self.logger.info(f"Sampling {sample_size} instances from {X.shape[0]} total instances")
             indices = np.random.choice(X.shape[0], sample_size, replace=False)
             X = X[indices]
         else:
-            if X.shape[0] > 100000:
+            if X.shape[0] > 1000000:
                 self.logger.warning(
                     f"Processing large dataset with {X.shape[0]} instances without sampling. "
                     "This may take a long time and consume significant memory."
@@ -428,13 +428,13 @@ class SVMCluster:
             Tuple of (best k, method results, cluster labels, clustering model)
         """
         # Preprocess data
-        X = self.preprocess_data(X)
+        X_sampled = self.preprocess_data(X)
         
         # Determine k value
         if k is None:
             if k_range is None:
                 raise ValueError("Either k or k_range must be provided")
-            best_k, results = self.find_optimal_k(X, k_range, method, parallel, n_jobs)
+            best_k, results = self.find_optimal_k(X_sampled, k_range, method, parallel, n_jobs)
         else:
             best_k = k
             results = {}
@@ -600,7 +600,7 @@ class SVMCluster:
                         idx = k_range.index(k)
                         scores[idx] = score
                         
-                        # self.logger.info(f"k={k}: silhouette score = {score:.4f}")
+                        self.logger.debug(f"k={k}: silhouette score = {score:.4f}")
                         
                         if score > best_score:
                             best_score = score

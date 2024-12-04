@@ -17,7 +17,8 @@ class SVMHyperparameterTuner:
                  task_type: str,           
                  optimizer: str = 'random', 
                  n_iter: int = 10,         
-                 cv: int = 3,              
+                 cv: int = 10, 
+                 logger: logging.Logger = None,             
                  random_state: int = 42):
         """
         Initialize hyperparameter tuner
@@ -34,7 +35,7 @@ class SVMHyperparameterTuner:
         self.n_iter = n_iter
         self.cv_folds = cv
         self.random_state = random_state
-        self.logger = logging.getLogger('main')
+        self.logger = logger
         
         # Validate optimizer type
         valid_optimizers = ['random', 'grid', 'bayes', 'tpe']
@@ -54,8 +55,8 @@ class SVMHyperparameterTuner:
         }
         gamma_range = {
             'min': 1e-5,
-            'max': 1e1,
-            'n_points': 10  # for grid search
+            'max': 1e2,
+            'n_points': 6  # for grid search
         }
         coef0_range = {
             'min': 0.0,
@@ -82,9 +83,13 @@ class SVMHyperparameterTuner:
         
         # Bayesian optimization space
         self.bayes_space = {
-            'C': (1e-3, 1e3, 'log-uniform'),
-            'gamma': (1e-4, 1e1, 'log-uniform'),
-            'kernel': ['rbf', 'linear', 'poly', 'sigmoid'],
+            'C': (1e-5, 1e5, 'log-uniform'),
+            'gamma': (1e-4, 1e2, 'log-uniform'),
+            'kernel': ['rbf', 
+                       'linear', 
+                       'poly', 
+                       'sigmoid'
+                       ],
             'decision_function_shape': ['ovr', 'ovo'],
         }
         # if 'poly' in self.bayes_space['kernel'] or 'sigmoid' in self.bayes_space['kernel']:
@@ -371,21 +376,24 @@ class SVMHyperparameterTuner:
         from concurrent.futures import ThreadPoolExecutor, as_completed
         
         all_results = []
-        
-        with ThreadPoolExecutor(max_workers=n_jobs) as executor:
-            future_to_batch = {
-                executor.submit(self._tune_batch, batch): batch 
-                for batch in batches
-            }
-            
-            # Collect results as they complete
-            for future in as_completed(future_to_batch):
-                try:
-                    batch_results = future.result()
-                    all_results.extend(batch_results)
-                except Exception as e:
-                    self.logger.error(f"Batch tuning failed: {str(e)}")
-                    continue
+        try:
+            with ThreadPoolExecutor(max_workers=n_jobs) as executor:
+                future_to_batch = {
+                    executor.submit(self._tune_batch, batch): batch 
+                    for batch in batches
+                }
+                
+                # Collect results as they complete
+                for future in as_completed(future_to_batch):
+                    try:
+                        batch_results = future.result()
+                        all_results.extend(batch_results)
+                    except Exception as e:
+                        self.logger.error(f"Batch tuning failed: {str(e)}")
+                        continue
+        except KeyboardInterrupt:
+            print("Interrupted! Shutting down process pool...")
+            executor.shutdown(wait=False)
         
         return all_results
     

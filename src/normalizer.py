@@ -34,11 +34,11 @@ class DataNormalizer:
             
             # Calculate norms for each feature
             if self.norm == 'l2':
-                self.feature_norms_ = np.sqrt(X.multiply(X).sum(axis=0)).A1
+                self.feature_norms_ = np.sqrt(X.multiply(X).sum(axis=1)).A1
             elif self.norm == 'l1':
-                self.feature_norms_ = np.abs(X).sum(axis=0).A1
+                self.feature_norms_ = np.abs(X).sum(axis=1).A1
             else:  # max
-                self.feature_norms_ = np.abs(X).max(axis=0).A1
+                self.feature_norms_ = np.abs(X).max(axis=1).A1
             
             # Avoid division by zero
             self.feature_norms_[self.feature_norms_ == 0] = 1.0
