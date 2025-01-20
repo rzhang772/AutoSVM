@@ -15,6 +15,7 @@ class FeatureProcessor:
     def __init__(self, 
                  task_type: str,           # 'clf' or 'reg'
                  enable_mutual_info: bool = True,
+                 mutual_ratio: float = 50,
                  enable_qbsofs: bool = True,
                  non_zero_threshold: float = 0.01,
                  min_features: int = 10,
@@ -42,6 +43,7 @@ class FeatureProcessor:
         # Use provided logger or create new one
         self.logger = logger
         self.feature_stats = {}
+        self.mutual_ratio = mutual_ratio
         # self.selected_mask = {} # {cluster_id: [mutual_info_mask, qbsofs_mask]}
         
     
@@ -79,7 +81,7 @@ class FeatureProcessor:
                 # First try SelectPercentile
                 percentile_selector = SelectPercentile(
                     score_func=score_func,
-                    percentile=50  # Select top 50% features
+                    percentile=self.mutual_ratio  # Select top 50% features
                 )
                 X_percentile = percentile_selector.fit_transform(X_dense, y)
                 self.logger.debug(f"X_percentile cluster{cluster_id}, new shape: {X_percentile.shape}")
@@ -161,7 +163,7 @@ class FeatureProcessor:
             X_processed, selected_features_for_single_cluster = self._process_cluster_features(
                 X_cluster, y_cluster, cluster_id
             )
-            self.logger.debug(f"Cluster {cluster_id}: Selected {len(selected_features_for_single_cluster)} features")
+            self.logger.info(f"Cluster {cluster_id}: Selected {len(selected_features_for_single_cluster)} features")
             
             # Store selected features for each cluster
             self.selected_features[cluster_id] = selected_features_for_single_cluster
@@ -169,7 +171,7 @@ class FeatureProcessor:
             
             if X_processed is not None:
                 processed_clusters[cluster_id] = (X_processed, y_cluster, selected_features_for_single_cluster)
-                self.logger.info(f"Cluster {cluster_id}: Selected {len(selected_features_for_single_cluster)} features")
+                self.logger.debug(f"Cluster {cluster_id}: Selected {len(selected_features_for_single_cluster)} features")
         
         return processed_clusters
     
@@ -238,7 +240,7 @@ class FeatureProcessor:
         self.logger.info(f"Processing {len(balanced_clusters)} clusters using {n_jobs} workers")
         
         # Process clusters in parallel
-        from concurrent.futures import ProcessPoolExecutor, as_completed
+        from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
         
         # Split clusters into batches
         cluster_items = list(balanced_clusters.items())
@@ -250,7 +252,7 @@ class FeatureProcessor:
         
         processed_clusters = {}
         
-        with ProcessPoolExecutor(max_workers=n_jobs) as executor:
+        with ThreadPoolExecutor(max_workers=n_jobs) as executor:
             # Submit batches
             future_to_batch = {
                 executor.submit(self._process_batch, batch): batch 

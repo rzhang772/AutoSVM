@@ -4,13 +4,12 @@ import logging
 import os
 from datetime import datetime
 from typing import Dict, List, Tuple, Optional, Union, Any
-from sklearn.cluster import MiniBatchKMeans
+from sklearn.cluster import MiniBatchKMeans, KMeans
 from sklearn.metrics import silhouette_score
 from dataset import Dataset
 from logger import Logger
 import scipy.sparse
 from enum import Enum
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class ClusterMethod(Enum):
     KMEANS = "kmeans"
@@ -122,13 +121,15 @@ class SVMCluster:
     def preprocess_data(self, X: scipy.sparse.csr_matrix) -> scipy.sparse.csr_matrix:
         """Preprocess data for clustering"""
         # Sample large datasets if sampling is enabled
-        if self.enable_sampling and X.shape[0] > 1000000:
+        if self.enable_sampling and X.shape[0] > 10000:
+            # if X.shape[0] > 1000000:
+            #     self.sample_ratio = 0.01
             sample_size = int(X.shape[0] * self.sample_ratio)
             self.logger.info(f"Sampling {sample_size} instances from {X.shape[0]} total instances")
             indices = np.random.choice(X.shape[0], sample_size, replace=False)
             X = X[indices]
         else:
-            if X.shape[0] > 1000000:
+            if X.shape[0] > 10000:
                 self.logger.warning(
                     f"Processing large dataset with {X.shape[0]} instances without sampling. "
                     "This may take a long time and consume significant memory."
@@ -185,12 +186,18 @@ class SVMCluster:
         
         for k in k_range:
             # self.logger.info(f"Computing silhouette score for k={k}")
-            kmeans = MiniBatchKMeans(
-                n_clusters=k, 
-                random_state=self.random_state,
-                batch_size=self.batch_size
-            )
+            # kmeans = MiniBatchKMeans(
+            #     n_clusters=k, 
+            #     random_state=self.random_state,
+            #     batch_size=self.batch_size
+            # )
+            self.logger.debug(f"Computing silhouette score for k={k}")
+            kmeans = KMeans(n_clusters=k, random_state=self.random_state)
             labels = kmeans.fit_predict(X)
+            if np.unique(labels).shape[0] == 1:
+                self.logger.warning(f"Only one cluster found for k={k}. Skipping...")
+                scores.append(-1)
+                continue
             score = silhouette_score(X, labels, metric="euclidean", sample_size=10000)
             scores.append(score)
             
@@ -266,11 +273,12 @@ class SVMCluster:
                     raise MemoryError(error_msg)
                 
                 # Compute dispersion for actual data
-                kmeans = MiniBatchKMeans(
-                    n_clusters=k, 
-                    random_state=self.random_state,
-                    batch_size=self.batch_size
-                )
+                # kmeans = MiniBatchKMeans(
+                #     n_clusters=k, 
+                #     random_state=self.random_state,
+                #     batch_size=self.batch_size
+                # )
+                kmeans = KMeans(n_clusters=k, random_state=self.random_state)
                 labels = kmeans.fit_predict(X)
                 disp_actual = self._compute_dispersion(X, labels, kmeans.cluster_centers_)
                 
@@ -438,15 +446,20 @@ class SVMCluster:
         else:
             best_k = k
             results = {}
-        
+        # exit(0)
         # Perform clustering
         if algorithm == "kmeans":
-            self.model = MiniBatchKMeans(
-                n_clusters=best_k,
-                random_state=self.random_state,
-                batch_size=self.batch_size
-            )
-            labels = self.model.fit_predict(X)
+            # self.model = MiniBatchKMeans(
+            #     n_clusters=best_k,
+            #     random_state=self.random_state,
+            #     batch_size=self.batch_size
+            # )
+            self.model = KMeans(n_clusters=best_k, random_state=self.random_state)
+            if X_sampled.shape[0] != X.shape[0]:
+                self.model.fit(X_sampled)
+                labels = self.model.predict(X)
+            else:
+                labels = self.model.fit_predict(X)
         elif algorithm == "random":
             self.model = RandomClusterer(n_clusters=best_k, random_state=self.random_state)
             labels = self.model.fit_predict(X)
@@ -473,11 +486,12 @@ class SVMCluster:
         maxs = X_sample.max(axis=0)
         
         # Compute dispersion for actual data
-        kmeans = MiniBatchKMeans(
-            n_clusters=k,
-            random_state=self.random_state,
-            batch_size=self.batch_size
-        )
+        # kmeans = MiniBatchKMeans(
+        #     n_clusters=k,
+        #     random_state=self.random_state,
+        #     batch_size=self.batch_size
+        # )
+        kmeans = KMeans(n_clusters=k, random_state=self.random_state)
         labels = kmeans.fit_predict(X)
         disp_actual = self._compute_dispersion(X, labels, kmeans.cluster_centers_)
         
@@ -551,11 +565,12 @@ class SVMCluster:
         """Process a batch of k values"""
         batch_results = []
         for k in k_batch:
-            kmeans = MiniBatchKMeans(
-                n_clusters=k, 
-                random_state=self.random_state,
-                batch_size=self.batch_size
-            )
+            # kmeans = MiniBatchKMeans(
+            #     n_clusters=k, 
+            #     random_state=self.random_state,
+            #     batch_size=self.batch_size
+            # )
+            kmeans = KMeans(n_clusters=k, random_state=self.random_state)
             labels = kmeans.fit_predict(X)
             score = silhouette_score(X, labels, metric="euclidean", sample_size=10000)
             batch_results.append((k, score))
@@ -585,9 +600,9 @@ class SVMCluster:
             for i in range(0, len(k_range), batch_size)
         ]
         
-        from concurrent.futures import ProcessPoolExecutor, as_completed
+        from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
         
-        with ProcessPoolExecutor(max_workers=n_jobs) as executor:
+        with ThreadPoolExecutor(max_workers=n_jobs) as executor:
             future_to_batch = {
                 executor.submit(self._process_k_batch, batch, X): batch 
                 for batch in k_batches
@@ -602,7 +617,7 @@ class SVMCluster:
                         
                         self.logger.debug(f"k={k}: silhouette score = {score:.4f}")
                         
-                        if score > best_score:
+                        if score > best_score or (score == best_score and k < best_k):
                             best_score = score
                             best_k = k
                 except Exception as e:

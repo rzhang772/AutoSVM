@@ -21,8 +21,8 @@ from cascade_cluster import CascadeCluster
 import pandas as pd
 
 # Configuration constants
-K_MIN = 5
-K_MAX = 200
+K_MIN = 2
+K_MAX = 100
 ENABLE_SAMPLING = True  # Control whether to enable sampling
 SAMPLE_RATIO = 0.1     # Sampling ratio
 
@@ -104,9 +104,11 @@ def main():
     parser.add_argument('--feature-construction', action='store_true',
                       help='Enable feature construction')
     parser.add_argument('--discretize-ratio', type=float, default=0.1,
-                      help='Ratio of features to discretize (default: 0.3)')
+                      help='Ratio of features to discretize (default: 0.1)')
     parser.add_argument('--mutual-info', action='store_true',
                       help='Enable mutual information feature selection')
+    parser.add_argument('--mutual-ratio', type=float, default=50,
+                      help='Ratio of features to select based on mutual information, range: (0, 100]')
     parser.add_argument('--qbsofs', action='store_true',
                       help='Enable QBSOFS feature selection')
     parser.add_argument('--parallel-feature', action='store_true',
@@ -123,7 +125,7 @@ def main():
                       help='Hyperparameter optimization strategy')
     parser.add_argument('--n-iter', type=int, default=10,
                       help='Number of parameter settings sampled')
-    parser.add_argument('--cv-folds', type=int, default=10,
+    parser.add_argument('--cv-folds', type=int, default=5,
                       help='Number of cross-validation folds')
     parser.add_argument('--parallel-tuning', action='store_true',
                       help='Enable parallel hyperparameter tuning')
@@ -141,7 +143,7 @@ def main():
     train_dataset_name = os.path.splitext(os.path.basename(args.train))[0]
     
     # Create log directory if it doesn't exist
-    log_dir = "./log"
+    log_dir = "./result"
     os.makedirs(log_dir, exist_ok=True)
     
     # Initialize logger with dataset name in log file and set log level
@@ -176,6 +178,8 @@ def main():
     logger.info("Clustering Configuration:")
     logger.info(f"  Clustering enabled: {args.clustering}")
     if args.clustering:
+        logger.info(f"  entorpy selection: {args.entropy_selection}")
+        logger.info(f"  Entropy ratio: {args.entropy_ratio}")
         logger.info(f"  Cascade clustering: {args.cascade}")
         logger.info(f"  Algorithm: {args.algorithm}")
         if args.algorithm == 'kmeans':
@@ -206,6 +210,7 @@ def main():
         logger.info(f"  Independence smoothing: {args.independence_smooth}")
         logger.info(f"  Feature construction: {args.feature_construction}")
         logger.info(f"  Mutual info selection: {args.mutual_info}")
+        logger.info(f"  Mutual info ratio: {args.mutual_ratio}")
         logger.info(f"  QBSOFS selection: {args.qbsofs}")
     
     logger.info("Hyperparameter Tuning Configuration:")
@@ -254,8 +259,29 @@ def main():
         
         # Verify feature dimensions match
         if X_train.shape[1] != X_test.shape[1]:
-            logger.error("Feature dimensions do not match between train and test sets")
-            return 1
+            # logger.error("Feature dimensions do not match between train and test sets")
+            # return 1
+            # 找出训练集和测试集的非零特征索引
+            train_features = set(range(X_train.shape[1]))
+            test_features = set(range(X_test.shape[1]))
+
+            # 找到训练集和测试集的公共特征
+            common_features = train_features.intersection(test_features)
+            common_features = sorted(common_features)  # 保证特征索引顺序
+
+            # 保留训练集和测试集的公共特征
+            X_train = X_train[:, common_features]
+            X_test = X_test[:, common_features]
+            logger.info(f"Feature dimensions do not match between train and test sets. Adjust to Common features: {len(common_features)}")
+        # filter out zero ratio >= 0.n features
+        train_nonzero_count = X_train.getnnz(axis=0)
+        n_train_samples = X_train.shape[0]
+        train_missing_ratio = 1 - train_nonzero_count / n_train_samples
+        missing_filter_ratio = 0.98
+        valid_features = np.where(train_missing_ratio < missing_filter_ratio)[0]
+        X_train = X_train[:, valid_features]
+        X_test = X_test[:, valid_features]
+        logger.info(f"Filter out zero ratio >= {missing_filter_ratio} features. Adjust to Common features: {X_train.shape[1]}")
         
         # Normalize data
         norm_start = time.time()
@@ -298,7 +324,9 @@ def main():
             # cascade clustering
             logger.info("Starting cascade clustering...")
             cluster_start = time.time()
-            cascade_cluster = CascadeCluster(args.cascade,
+            cascade_cluster = CascadeCluster(
+                                             args.train,
+                                             args.cascade,
                                              args.entropy_selection, 
                                              args.entropy_ratio, 
                                              args.k, 
@@ -317,6 +345,7 @@ def main():
             # Log cluster sizes
             unique_labels, cluster_sizes = np.unique(labels, return_counts=True)
             # df_labels['cluster_size'] = cluster_sizes
+            logger.info(f"cluster number:{len(unique_labels)}")
 
             logger.debug(f"\nCluster size distribution:")
             for label, size in zip(unique_labels, cluster_sizes):
@@ -430,6 +459,7 @@ def main():
             feature_processor = FeatureProcessor(
                 task_type=args.type,
                 enable_mutual_info=args.mutual_info,
+                mutual_ratio=args.mutual_ratio,
                 enable_qbsofs=args.qbsofs,
                 non_zero_threshold=0.01,
                 min_features=5,
@@ -480,9 +510,6 @@ def main():
             'verbose': False
         }
         
-        # Initialize parameters list for each cluster
-        params_list = []
-        
         # Perform hyperparameter tuning if enabled
         if args.tune_hyperparams:
             logger.info("\n=== Hyperparameter Tuning ===")
@@ -512,40 +539,39 @@ def main():
                     tuning_results = tuner.tune(processed_clusters)
                 
                 # Store tuning results and combine with default parameters
-                if tuning_results:
-                    params_list = [
-                        {**default_params, **result['best_params']}
-                        for result in tuning_results
-                    ]
-                else:
-                    logger.warning("Hyperparameter tuning failed, using default parameters")
-                    params_list = [default_params] * len(processed_clusters)
+            #     if tuning_results:
+            #         params_list = [
+            #             {**default_params, **result['best_params']}
+            #             for result in tuning_results
+            #         ]
+            #     else:
+            #         logger.warning("Hyperparameter tuning failed, using default parameters")
+            #         params_list = [default_params] * len(processed_clusters)
             except Exception as e:
                 logger.error(f"Hyperparameter tuning failed: {str(e)}")
                 logger.warning("Using default parameters")
-                params_list = [default_params] * len(processed_clusters)
+            #     params_list = [default_params] * len(processed_clusters)
             
             tuning_time = time.time() - tuning_start_time
             logger.info(f"\nHyperparameter tuning completed in {tuning_time:.2f} seconds")
         else:
             tuning_time = 0  # Set to 0 if not used
             # Use default parameters for all clusters
-            for _ in processed_clusters:
-                params_list.append(default_params)
+            # for _ in processed_clusters:
+            #     params_list.append(default_params)
+            tuning_results = {}
         
         # Initialize SVM trainer with appropriate parameters
         svm_trainer = SVMTrainer(
             task_type=args.type,
             svm_type=args.svm_type,
-            params_list=params_list,
+            params_dict=tuning_results,
             logger=logger  # Pass main logger
         )
         
         # Train models for each cluster
         logger.info("\n=== SVM Training ===")
         train_start_time = time.time()
-
-        
         
         if args.parallel_train:
             logger.info("Using parallel training")
@@ -593,7 +619,16 @@ def main():
             # test_labels = clusterer.predict(X_test_normalized_selected)
 
             test_labels, df_test_labels = cascade_cluster.predict(X_test_normalized)
-            logger.debug(f"Test data cluster labels: {np.unique(test_labels)}")
+
+            # Log cluster sizes
+            unique_test_labels, test_cluster_sizes = np.unique(test_labels, return_counts=True)
+            # df_labels['cluster_size'] = cluster_sizes
+            logger.debug(f"len:{len(unique_test_labels)}, unique_test_labels: {unique_test_labels}")
+            logger.debug(f"len:{len(test_cluster_sizes)}, test_cluster_sizes: {test_cluster_sizes}")
+            logger.debug(f"\ntest Cluster size distribution:")
+            for label, size in zip(unique_test_labels, test_cluster_sizes):
+                logger.debug(f"Cluster {label}: {size} samples ({size/len(test_labels)*100:.2f}%)")
+            # logger.debug(f"Test data cluster labels: {np.unique(test_labels)}")
         else:
             # If clustering is disabled, assign all test data to cluster 0
             test_labels = np.zeros(X_test_normalized.shape[0], dtype=int)
@@ -627,7 +662,11 @@ def main():
 
         for cluster_id, (X_cluster, y_cluster, feat) in processed_clusters.items():
             logger.debug(f"training Cluster {cluster_id} features: {feat}")
-            logger.debug(f"test Cluster {cluster_id} features: {test_clusters[cluster_id][2]}")
+            if cluster_id in test_clusters:
+                logger.debug(f"test Cluster {cluster_id} features: {test_clusters[cluster_id][2]}")
+            else:
+                logger.debug(f"test Cluster {cluster_id} not found in test clusters")
+            # logger.debug(f"test Cluster {cluster_id} features: {test_clusters[cluster_id][2]}")
 
         # predict and evaluate
         logger.info("predicting...")
@@ -668,10 +707,11 @@ def main():
             if args.type == 'clf':
                 from sklearn.metrics import accuracy_score, f1_score
                 accuracy = accuracy_score(true_labels, prediction)
-                if len(np.unique(true_labels)) == 2:
-                    f1 = f1_score(true_labels, prediction, average='binary')
-                else:
-                    f1 = f1_score(true_labels, prediction, average='weighted')
+                # if len(np.unique(true_labels)) == 2:
+                #     f1 = f1_score(true_labels, prediction, average='binary')
+                # else:
+                #     f1 = f1_score(true_labels, prediction, average='weighted')
+                f1 = f1_score(true_labels, prediction, average='weighted')
                 # logger.info(f"Accuracy: {accuracy:.4f}, F1 Score: {f1:.4f}")
                 cluster_metrics[cluster_id] = {'accuracy': accuracy, 'f1': f1}
                 logger.info(f"Cluster {cluster_id} Test samples: {len(prediction)}, Accuracy: {accuracy:.4f}, F1 Score: {f1:.4f}")
@@ -699,10 +739,12 @@ def main():
             logger.info(f"Overall Accuracy: {overall_accuracy:.4f}")
             logger.info(f"Overall F1 Score: {overall_f1:.4f}")
         else:  # regression task
+            reg_y_range = [np.max(all_true_labels), np.min(all_true_labels)]
             overall_mse = mean_squared_error(all_true_labels, all_predictions)
             overall_rmse = np.sqrt(overall_mse)
             overall_r2 = r2_score(all_true_labels, all_predictions)
             
+            logger.info(f"Y_range: {reg_y_range}")
             logger.info(f"Overall MSE: {overall_mse:.4f}")
             logger.info(f"Overall RMSE: {overall_rmse:.4f}")
             logger.info(f"Overall R² Score: {overall_r2:.4f}")

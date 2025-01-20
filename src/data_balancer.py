@@ -43,6 +43,8 @@ class DataBalancer:
             Dictionary of balanced cluster data
         """
         balanced_clusters = {}
+
+        label_set = np.unique(y_full)
         
         # Create index map for each class
         class_indices = {label: np.where(y_full == label)[0] 
@@ -54,6 +56,7 @@ class DataBalancer:
             # Calculate current class distribution
             class_counts = Counter(y_cluster)
             majority_count = max(class_counts.values())
+            majority_label = next(iter(class_counts))
             
             # Log original distribution at debug level
             # self.logger.debug("Original class distribution:")
@@ -64,8 +67,19 @@ class DataBalancer:
             # Identify underrepresented classes
             underrep_classes = {
                 label: count for label, count in class_counts.items()
-                if count / majority_count < self.min_ratio
+                if count / majority_count < self.min_ratio or count < 2
             }
+
+            # Select a label to balance the cluster if there is only one class
+            if(len(class_counts) == 1):
+                self.logger.info(f"Only one class in cluster {cluster_id}")
+                filtered_label_set = label_set[label_set != majority_label]
+                # Randomly select one label from the filtered set
+                if len(filtered_label_set) > 0:  # Ensure there are remaining labels
+                    selected_label = np.random.choice(filtered_label_set)
+                    underrep_classes[selected_label] = 0
+                else:
+                    self.logger.error("Cannot choose a label to balance the cluster")
             
             if not underrep_classes:
                 self.logger.debug("No class balancing needed")
@@ -80,7 +94,7 @@ class DataBalancer:
             
             for label, count in underrep_classes.items():
                 # Calculate how many samples to add based on majority class
-                target_count = int(majority_count * self.min_ratio)
+                target_count = max(5,int(majority_count * self.min_ratio))
                 samples_needed = target_count - count
                 
                 # Get available indices for this class
@@ -99,7 +113,7 @@ class DataBalancer:
                 )
                 
                 if samples_to_add <= 0:
-                    continue
+                    samples_to_add=max(2, int(0.5*majority_count))
                 
                 # Randomly select samples with replacement if necessary
                 if samples_to_add > len(available_indices):
@@ -136,7 +150,7 @@ class DataBalancer:
                 #     ratio = count / new_majority_count
                 #     self.logger.debug(f"Class {label}: {count} samples ({ratio:.2%} of majority)")
                 
-                self.logger.info(f"Cluster {cluster_id} balanced: {len(y_cluster)} -> {len(y_balanced)} samples")
+                self.logger.info(f"Cluster {cluster_id} balanced: {len(y_cluster)} -> {len(y_balanced)} samples, classes:{len(new_counts)}")
                 balanced_clusters[cluster_id] = (X_balanced, y_balanced, selected_features)
             else:
                 self.logger.info(f"Cluster {cluster_id} unchanged: {len(y_cluster)} samples")

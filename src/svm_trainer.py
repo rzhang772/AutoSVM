@@ -6,7 +6,7 @@ from thundersvm import SVR as ThunderSVR
 from typing import Dict, Any, Union, Tuple, List, Optional
 import logging
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 
 class SVMTrainer:
     """Class for training SVM models on processed clusters"""
@@ -14,7 +14,7 @@ class SVMTrainer:
     def __init__(self,
                  task_type: str,           # 'clf' or 'reg'
                  svm_type: str = 'libsvm', # 'libsvm' or 'thundersvm'
-                 params_list: List[Dict[str, Any]] = None,
+                 params_dict: Dict[int, Dict[str, Dict[str, Any]]] = None,
                  logger: Optional[logging.Logger] = None):
         """
         Initialize SVMTrainer
@@ -27,8 +27,15 @@ class SVMTrainer:
         """
         self.task_type = task_type.lower()
         self.svm_type = svm_type.lower()
-        self.params_list = params_list or []
+        self.params_dict = params_dict or {}
         self.logger = logger or logging.getLogger('svm_trainer')
+        self.default_params = {
+            'kernel': 'rbf',
+            'C': 1.0,
+            'gamma': 'scale',
+            'cache_size': 2000,
+            'verbose': False
+        }
         
         # Validate task type
         if self.task_type not in ['clf', 'reg']:
@@ -45,9 +52,9 @@ class SVMTrainer:
         """Get appropriate SVM model based on task and implementation type"""
         if self.svm_type == 'libsvm':
             if self.task_type == 'clf':
-                return SVC(**params)
+                return SVC(**params, max_iter=5000)
             else:
-                return SVR(**params)
+                return SVR(**params, max_iter=5000)
         else:  # thundersvm
             if self.task_type == 'clf':
                 return ThunderSVC(**params)
@@ -79,8 +86,11 @@ class SVMTrainer:
                     self.logger.info("Converted to dense format")
                 
                 # Get parameters for this cluster
-                params = self.params_list[cluster_id]
-                
+                if cluster_id in self.params_dict:
+                    params = self.params_dict[cluster_id]['best_params']
+                else:
+                    params = self.default_params
+                    self.logger.info(f"cluster {cluster_id}, Using default parameters")
                 # Initialize and train model
                 train_start = time.time()
                 model = self._get_model(params)
@@ -155,7 +165,12 @@ class SVMTrainer:
                     X = X.toarray()
                 
                 # Get parameters for this cluster
-                params = self.params_list[cluster_id]
+                if cluster_id in self.params_dict:
+                    params = self.params_dict[cluster_id]['best_params']
+                else:
+                    params = self.default_params
+                    self.logger.info(f"cluster {cluster_id}, Using default parameters")
+
                 
                 # Initialize and train model
                 train_start = time.time()
@@ -213,22 +228,26 @@ class SVMTrainer:
         ]
         
         results = {}
-        
-        with ThreadPoolExecutor(max_workers=n_jobs) as executor:
-            future_to_batch = {
-                executor.submit(self._train_batch, batch, use_sparse): batch 
-                for batch in batches
-            }
-            
-            for future in as_completed(future_to_batch):
-                try:
-                    batch_results, batch_models = future.result()
-                    results.update(batch_results)
-                    self.models.update(batch_models)
-                except Exception as e:
-                    self.logger.error(f"Batch processing failed: {str(e)}")
-                    continue
-        
+        models = {}
+        try:
+            with ThreadPoolExecutor(max_workers=n_jobs) as executor:
+                future_to_batch = {
+                    executor.submit(self._train_batch, batch, use_sparse): batch 
+                    for batch in batches
+                }
+                
+                for future in as_completed(future_to_batch):
+                    try:
+                        batch_results, batch_models = future.result()
+                        results.update(batch_results)
+                        models.update(batch_models)
+                    except Exception as e:
+                        self.logger.error(f"Batch processing failed: {str(e)}")
+                        continue
+        except KeyboardInterrupt:
+            print("Interrupted! Shutting down process pool...")
+            executor.shutdown(wait=False)
+        self.models.update(models)
         return results
     
     def _train_single_model(self,
@@ -340,6 +359,7 @@ class SVMTrainer:
                     try:
                         batch_results = future.result()
                         predictions.update(batch_results)
+                        self.logger.debug(f"Predicted for {batch_results.keys()} clusters")
                     except Exception as e:
                         self.logger.error(f"Batch processing failed: {str(e)}")
                         continue

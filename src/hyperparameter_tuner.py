@@ -47,6 +47,15 @@ class SVMHyperparameterTuner:
     
     def _define_parameter_spaces(self):
         """Define parameter spaces for different optimizers"""
+
+        # default_params = {
+        #     'kernel': 'rbf',
+        #     'C': 1.0,
+        #     'gamma': 'scale',
+        #     'cache_size': 2000,
+        #     'verbose': False
+        # }
+
         # Define common parameter ranges
         C_range = {
             'min': 1e-3,
@@ -83,14 +92,14 @@ class SVMHyperparameterTuner:
         
         # Bayesian optimization space
         self.bayes_space = {
-            'C': (1e-5, 1e5, 'log-uniform'),
+            'C': (1e-4, 1e4, 'log-uniform'),
             'gamma': (1e-4, 1e2, 'log-uniform'),
             'kernel': ['rbf', 
                        'linear', 
                        'poly', 
                        'sigmoid'
                        ],
-            'decision_function_shape': ['ovr', 'ovo'],
+            # 'decision_function_shape': ['ovr', 'ovo'],
         }
         # if 'poly' in self.bayes_space['kernel'] or 'sigmoid' in self.bayes_space['kernel']:
         #     self.bayes_space['coef0'] = (coef0_range['min'], coef0_range['max'], 'uniform')
@@ -102,13 +111,16 @@ class SVMHyperparameterTuner:
             'C': hp.loguniform('C', np.log(1e-3), np.log(1e3)),
             'gamma': hp.loguniform('gamma', np.log(1e-4), np.log(1e1)),
             'kernel': hp.choice('kernel', ['rbf', 'linear', 'poly', 'sigmoid']),
-            'decision_function_shape': hp.choice('decision_function_shape', ['ovr', 'ovo']),
+            # 'decision_function_shape': hp.choice('decision_function_shape', ['ovr', 'ovo']),
         }
         # if 'poly' in self.tpe_space['kernel'] or 'sigmoid' in self.tpe_space['kernel']:
         #     self.tpe_space['coef0'] = hp.uniform('coef0', coef0_range['min'], coef0_range['max'])
         # if self.task_type == 'reg':
         #     self.tpe_space['epsilon'] = hp.uniform('epsilon', epsilon_range['min'], epsilon_range['max'])
         
+        if self.task_type == 'clf':
+            self.bayes_space['decision_function_shape'] = ['ovr', 'ovo']
+            self.tpe_space['decision_function_shape'] = hp.choice('decision_function_shape', ['ovr', 'ovo'])
         # Add epsilon parameter for regression
         if self.task_type == 'reg':
             self.grid_space['epsilon'] = np.linspace(0.1, 1.0, 10)
@@ -138,11 +150,11 @@ class SVMHyperparameterTuner:
             return -1
         
         # For parallel tuning, calculate based on tuning_jobs
-        if tuning_jobs >= cpu_count:
+        if tuning_jobs >= cpu_count/2:
             return 1
         else:
             # Round to nearest integer
-            return round(cpu_count / tuning_jobs) - 1
+            return min(self.cv_folds, round(cpu_count / tuning_jobs) - 1)
     
     def calculate_parallel_tuning_jobs(self, n_clusters: int) -> int:
         """Calculate optimal number of parallel jobs for tuning multiple clusters
@@ -245,7 +257,7 @@ class SVMHyperparameterTuner:
             self.logger.error(f"Failed parameters: {params}")
             return {'loss': float('inf'), 'status': STATUS_OK}
     
-    def tune(self, processed_clusters: Dict) -> List[Dict[str, Any]]:
+    def tune(self, processed_clusters: Dict) -> Dict[int,Dict[str, Dict[str, Any]]]:
         """
         Perform hyperparameter tuning for all clusters sequentially
         
@@ -255,7 +267,7 @@ class SVMHyperparameterTuner:
         Returns:
             List of tuning results for each cluster
         """
-        tuning_results = []
+        tuning_results = {}
         
         for cluster_id, (X, y, _) in processed_clusters.items():
             # self.logger.info(f"Tuning hyperparameters for cluster {cluster_id}")
@@ -268,7 +280,7 @@ class SVMHyperparameterTuner:
             
             # Create base estimator
             if self.task_type == 'clf':
-                estimator = SVC()
+                estimator = SVC(max_iter=2000)
                 
                 # For classification, ensure minimum samples per class for cross-validation
                 min_samples = self._get_min_samples_per_class(y)
@@ -282,7 +294,7 @@ class SVMHyperparameterTuner:
                     random_state=self.random_state
                 )
             else:
-                estimator = SVR()
+                estimator = SVR(max_iter=2000)
                 self.cv = KFold(
                     n_splits=self.cv_folds,
                     shuffle=True,
@@ -295,7 +307,7 @@ class SVMHyperparameterTuner:
             else:
                 result = self._tune_sklearn(X, y, estimator)
             
-            tuning_results.append(result)
+            tuning_results[cluster_id] = result
             self.logger.info(f"Best parameters for cluster {cluster_id}: {result['best_params']}")
             self.logger.debug(f"Best cross-validation score: {result['best_score']:.4f}")
         
@@ -303,20 +315,21 @@ class SVMHyperparameterTuner:
     
     def _tune_batch(self, batch_clusters):
         """Tune hyperparameters for a batch of clusters"""
-        batch_results = []
+        batch_results = {}
         
         for cluster_id, (X, y, _) in batch_clusters.items():
             # self.logger.info(f"\nTuning hyperparameters for cluster {cluster_id}")
             
             # Create base estimator and set up cross-validation
             if self.task_type == 'clf':
-                estimator = SVC()
+                estimator = SVC(max_iter=2000)
                 min_samples = self._get_min_samples_per_class(y)
+                self.logger.debug(f"classes for cluster {cluster_id}: {len(np.unique(y))}")
                 cv_folds = max(2, min(self.cv_folds, min_samples))
                 self.logger.debug(f"Adjusted cv_folds to {cv_folds} due to minimum class samples")
                 self.cv = StratifiedKFold(n_splits=cv_folds, shuffle=True, random_state=self.random_state)
             else:
-                estimator = SVR()
+                estimator = SVR(max_iter=2000)
                 cv_folds = max(2, min(self.cv_folds, X.shape[0] // 2))
                 self.logger.debug(f"Adjusted cv_folds to {cv_folds} due to dataset size")
                 self.cv = KFold(n_splits=cv_folds, shuffle=True, random_state=self.random_state)
@@ -327,14 +340,14 @@ class SVMHyperparameterTuner:
             else:
                 result = self._tune_sklearn(X, y, estimator)
             
-            batch_results.append(result)
+            batch_results[cluster_id] = result
             self.logger.info(f"Best parameters for cluster {cluster_id}: {result['best_params']}")
         
         return batch_results
     
     def tune_parallel(self,
                      processed_clusters: Dict,
-                     n_jobs: int = -1) -> List[Dict[str, Any]]:
+                     n_jobs: int = -1) -> Dict[int,Dict[str, Dict[str, Any]]]:
         """Tune hyperparameters for all clusters in parallel
         
         Args:
@@ -373,9 +386,9 @@ class SVMHyperparameterTuner:
         ]
         
         # Process batches in parallel using ProcessPoolExecutor
-        from concurrent.futures import ThreadPoolExecutor, as_completed
+        from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
         
-        all_results = []
+        all_results = {}
         try:
             with ThreadPoolExecutor(max_workers=n_jobs) as executor:
                 future_to_batch = {
@@ -387,7 +400,7 @@ class SVMHyperparameterTuner:
                 for future in as_completed(future_to_batch):
                     try:
                         batch_results = future.result()
-                        all_results.extend(batch_results)
+                        all_results.update(batch_results)
                     except Exception as e:
                         self.logger.error(f"Batch tuning failed: {str(e)}")
                         continue
@@ -414,7 +427,8 @@ class SVMHyperparameterTuner:
         
         return {
             'best_params': optimizer.best_params_,
-            'best_score': optimizer.best_score_
+            'best_score': optimizer.best_score_,
+            # 'best_estimator': optimizer.best_estimator_
         }
     
     def _tune_tpe(self, X, y, estimator):

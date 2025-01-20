@@ -2,7 +2,7 @@ import numpy as np
 import scipy.sparse
 from typing import Dict, List, Tuple
 import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import time
 import os
 import pandas as pd
@@ -83,26 +83,29 @@ class FeatureIndependenceChecker:
         
         # Calculate statistics in parallel
         self.logger.info(f"Calculating cluster statistics using {self.n_jobs} workers...")
-        
-        with ThreadPoolExecutor(max_workers=self.n_jobs) as executor:
-            try:
-                futures = {
-                    executor.submit(
-                        self._calculate_cluster_stats, 
-                        (cid, data[0], data[1])
-                    ): cid for cid, data in clusters.items()
-                }
-                
-                for future in as_completed(futures):
-                    try:
-                        stats = future.result()
-                        self.cluster_stats.update(stats)
-                    except Exception as e:
-                        self.logger.error(f"Failed to calculate statistics: {str(e)}")
-            finally:
-                executor.shutdown(wait=True)
-                import gc
-                gc.collect()
+        try:
+            with ProcessPoolExecutor(max_workers=self.n_jobs) as executor:
+                try:
+                    futures = {
+                        executor.submit(
+                            self._calculate_cluster_stats, 
+                            (cid, data[0], data[1])
+                        ): cid for cid, data in clusters.items()
+                    }
+                    
+                    for future in as_completed(futures):
+                        try:
+                            stats = future.result()
+                            self.cluster_stats.update(stats)
+                        except Exception as e:
+                            self.logger.error(f"Failed to calculate statistics: {str(e)}")
+                finally:
+                    executor.shutdown(wait=True)
+                    import gc
+                    gc.collect()
+        except KeyboardInterrupt:
+            print("Interrupted! Shutting down process pool...")
+            executor.shutdown(wait=False)
     
     def fit_transform(self, clusters: Dict, dataset_name: str) -> Dict:
         """

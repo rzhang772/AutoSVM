@@ -76,7 +76,10 @@ class ClusterFeatureSelector:
         
         try:
             self.logger.info("Transforming data using selected features...")
+            self.logger.debug(f"Selected feature indices: {self.selected_features_}")
+            self.logger.debug(f"Original data shape: {X.shape}")
             X_selected = X[:, self.selected_features_]
+            self.logger.debug(f"Transformed data shape: {X_selected.shape}")
             return X_selected
             
         except Exception as e:

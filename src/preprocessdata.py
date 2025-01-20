@@ -16,25 +16,28 @@ RANDOM_STATE = 42
 
 # Dataset lists
 train_test_split_datasets = [
-    "aloi.scale",
-    "cadata",
-    "HIGGS",
+    # "aloi.scale",
+    # "cadata",
+    # "HIGGS",
+    # "news20.binary",
+    # "url_combined_normalized",
+    "space_ga_scale"
 ]
 
 train_set_datasets = [
-    "sector.scale",
-    "avazu-app.tr",
-    "epsilon_normalized",
-    "log1p.E2006.train",
-    "YearPredictionMSD",
+    # "sector.scale",
+    # "avazu-app.tr",
+    # "epsilon_normalized",
+    # "log1p.E2006.train",
+    # "YearPredictionMSD",
 ]
 
 test_set_datasets = [
-    "sector.t.scale",
-    "avazu-app.t",
-    "epsilon_normalized.t",
-    "log1p.E2006.test",
-    "YearPredictionMSD.t",
+    # "sector.t.scale",
+    # "avazu-app.t",
+    # "epsilon_normalized.t",
+    # "log1p.E2006.test",
+    # "YearPredictionMSD.t",
 ]
 
 def setup_logging() -> logging.Logger:

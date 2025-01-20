@@ -1,6 +1,13 @@
-# AutoSVM
-
+# MOE-SVM
 A Python tool for automated SVM analysis with clustering and feature processing.
+
+## For Quick Run
+
+```bash
+
+python src/run.py
+```
+
 
 ## Features
 
@@ -33,7 +40,6 @@ A Python tool for automated SVM analysis with clustering and feature processing.
   - Statistical features
 - **Feature Selection**
   - Mutual Information feature selection
-  - QBSOFS (BSO with Q-Learning)
   - Non-zero ratio filtering
 
 ### 4. Data Balancing (Optional)
@@ -253,3 +259,7 @@ python src/main.py --train ./data/processed/reg/cadata_train.txt --test ./data/p
 --balance-data --feature-processing --mutual-info --parallel-feature \
 --tune-hyperparams --optimizer bayes --parallel-tuning
 ```
+
+python src/main.py --train ./data/processed/clf/HIGGS_train.txt --test ./data/processed/clf/HIGGS_test.txt --type clf --parallel-train  --clustering --algorithm kmeans --entropy-selection --cascade --feature-processing --mutual-info --parallel-cluster --balance-data --tune-hyperparams --optimizer bayes --parallel-tuning --log-level debug
+
+python src/main.py --train ./data/processed/reg/cadata_train.txt --test ./data/processed/reg/cadata_test.txt --type reg --parallel-train  --clustering --algorithm kmeans --entropy-selection --cascade --feature-processing --mutual-info --parallel-cluster --balance-data --tune-hyperparams --optimizer bayes --parallel-tuning --log-level debug
