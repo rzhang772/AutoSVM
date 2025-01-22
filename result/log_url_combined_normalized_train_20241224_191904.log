@@ -1,0 +1,1640 @@
+2024-12-24 19:19:04,642 - INFO - Started clustering analysis at 2024-12-24 19:19:04
+2024-12-24 19:19:04,642 - INFO - 
+=== Execution Configuration ===
+2024-12-24 19:19:04,642 - INFO - Datasets:
+2024-12-24 19:19:04,642 - INFO -   Training data: ./data/processed/clf/url_combined_normalized_train.txt
+2024-12-24 19:19:04,642 - INFO -   Test data: ./data/processed/clf/url_combined_normalized_test.txt
+2024-12-24 19:19:04,642 - INFO - Task Configuration:
+2024-12-24 19:19:04,642 - INFO -   Task type: clf
+2024-12-24 19:19:04,642 - INFO -   SVM implementation: libsvm
+2024-12-24 19:19:04,642 - INFO -   Parallel training: False
+2024-12-24 19:19:04,642 - INFO - Clustering Configuration:
+2024-12-24 19:19:04,642 - INFO -   Clustering enabled: True
+2024-12-24 19:19:04,642 - INFO -   entorpy selection: True
+2024-12-24 19:19:04,642 - INFO -   Cascade clustering: True
+2024-12-24 19:19:04,642 - INFO -   Algorithm: kmeans
+2024-12-24 19:19:04,642 - INFO -   Method: silhouette
+2024-12-24 19:19:04,642 - INFO -   Fixed k: 97
+2024-12-24 19:19:04,642 - INFO -   Parallel clustering: False
+2024-12-24 19:19:04,642 - INFO -   Sampling enabled: True
+2024-12-24 19:19:04,642 - INFO -   Sampling ratio: 0.1
+2024-12-24 19:19:04,642 - INFO - Data Balancing Configuration:
+2024-12-24 19:19:04,642 - INFO -   Data balancing enabled: True
+2024-12-24 19:19:04,642 - INFO -   Minimum class ratio: 0.1
+2024-12-24 19:19:04,642 - INFO -   Maximum balance samples: 100
+2024-12-24 19:19:04,642 - INFO - Feature Processing Configuration:
+2024-12-24 19:19:04,642 - INFO -   Feature processing enabled: True
+2024-12-24 19:19:04,642 - INFO -   Independence check: False
+2024-12-24 19:19:04,642 - INFO -   Independence threshold: 0.0001
+2024-12-24 19:19:04,642 - INFO -   Independence smoothing: 1.0
+2024-12-24 19:19:04,642 - INFO -   Feature construction: True
+2024-12-24 19:19:04,642 - INFO -   Mutual info selection: True
+2024-12-24 19:19:04,642 - INFO -   Mutual info ratio: 50.0
+2024-12-24 19:19:04,642 - INFO -   QBSOFS selection: False
+2024-12-24 19:19:04,642 - INFO - Hyperparameter Tuning Configuration:
+2024-12-24 19:19:04,642 - INFO -   Tuning enabled: True
+2024-12-24 19:19:04,642 - INFO -   Optimizer: bayes
+2024-12-24 19:19:04,643 - INFO -   Number of iterations: 10
+2024-12-24 19:19:04,643 - INFO -   Cross-validation folds: 5
+2024-12-24 19:19:04,643 - INFO -   Parallel tuning: False
+2024-12-24 19:19:04,643 - INFO - 
+==================================================
+
+2024-12-24 19:19:04,643 - INFO - Loading training data...
+2024-12-24 19:20:18,614 - INFO - Training data loaded in 73.97 seconds
+2024-12-24 19:20:18,615 - INFO - Loading test data...
+2024-12-24 19:20:37,070 - INFO - Test data loaded in 18.46 seconds
+2024-12-24 19:20:37,071 - INFO - Training data shape: (1916904, 3231961)
+2024-12-24 19:20:37,071 - INFO - Test data shape: (479226, 3231957)
+2024-12-24 19:20:40,333 - INFO - Feature dimensions do not match between train and test sets. Adjust to Common features: 3231957
+2024-12-24 19:20:42,198 - INFO - Filter out zero ratio >= 0.98 features. Adjust to Common features: 354
+2024-12-24 19:20:42,877 - INFO - Data normalization completed in 0.68 seconds
+2024-12-24 19:20:42,877 - INFO - Starting clustering...
+2024-12-24 19:20:42,877 - INFO - Starting cascade clustering...
+2024-12-24 19:20:42,877 - INFO - Fitting cascade clusterer..., level:0
+2024-12-24 19:20:42,877 - INFO - Calculating feature entropies...
+2024-12-24 19:22:38,494 - INFO - Selected 107 features based on entropy
+2024-12-24 19:22:38,643 - INFO - Sampling 191690 instances from 1916904 total instances
+2024-12-24 19:23:09,535 - INFO - Clusters after level 0: 97
+2024-12-24 19:23:09,536 - INFO - Over-sized clusters: {1: 645656, 2: 38309, 3: 31996, 4: 16011, 6: 21813, 9: 35839, 10: 17958, 11: 56044, 12: 21989, 13: 11489, 14: 39140, 15: 23438, 16: 37483, 17: 14743, 18: 35935, 19: 21867, 20: 18388, 21: 17564, 22: 35227, 23: 37491, 26: 22923, 28: 22321, 29: 17893, 30: 11755, 31: 24521, 32: 19843, 33: 22350, 35: 17724, 36: 11951, 37: 11518, 38: 25393, 39: 17437, 42: 14739, 43: 29925, 46: 22179, 48: 12519, 49: 16822, 50: 32272, 55: 13089, 58: 14852, 61: 15278, 62: 14236, 63: 10280, 65: 14460, 66: 17147, 67: 12986, 69: 13260, 70: 10411, 72: 13129, 75: 17352}
+ Starting level 1...
+2024-12-24 19:23:09,693 - INFO - Sampling 64565 instances from 645656 total instances
+2024-12-24 19:24:13,954 - INFO - k for 1 in level 1: 65, labels:[ 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+ 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+ 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64]
+2024-12-24 19:24:17,934 - INFO - k for 2 in level 1: 4, labels:[0 1 2 3]
+2024-12-24 19:24:20,782 - INFO - k for 3 in level 1: 4, labels:[0 1 2 3]
+2024-12-24 19:24:21,403 - INFO - k for 4 in level 1: 2, labels:[0 1]
+2024-12-24 19:24:23,288 - INFO - k for 6 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:24:26,371 - INFO - k for 9 in level 1: 4, labels:[0 1 2 3]
+2024-12-24 19:24:27,284 - INFO - k for 10 in level 1: 2, labels:[0 1]
+2024-12-24 19:24:32,584 - INFO - k for 11 in level 1: 6, labels:[0 1 2 3 4 5]
+2024-12-24 19:24:33,957 - INFO - k for 12 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:24:34,661 - INFO - k for 13 in level 1: 2, labels:[0 1]
+2024-12-24 19:24:37,643 - INFO - k for 14 in level 1: 4, labels:[0 1 2 3]
+2024-12-24 19:24:39,210 - INFO - k for 15 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:24:42,169 - INFO - k for 16 in level 1: 4, labels:[0 1 2 3]
+2024-12-24 19:24:42,663 - INFO - k for 17 in level 1: 2, labels:[0 1]
+2024-12-24 19:24:45,004 - INFO - k for 18 in level 1: 4, labels:[0 1 2 3]
+2024-12-24 19:24:46,676 - INFO - k for 19 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:24:47,495 - INFO - k for 20 in level 1: 2, labels:[0 1]
+2024-12-24 19:24:48,183 - INFO - k for 21 in level 1: 2, labels:[0 1]
+2024-12-24 19:24:50,970 - INFO - k for 22 in level 1: 4, labels:[0 1 2 3]
+2024-12-24 19:24:53,395 - INFO - k for 23 in level 1: 4, labels:[0 1 2 3]
+2024-12-24 19:24:55,445 - INFO - k for 26 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:24:56,947 - INFO - k for 28 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:24:57,811 - INFO - k for 29 in level 1: 2, labels:[0 1]
+2024-12-24 19:24:58,271 - INFO - k for 30 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:00,117 - INFO - k for 31 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:25:00,907 - INFO - k for 32 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:02,318 - INFO - k for 33 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:25:03,011 - INFO - k for 35 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:03,658 - INFO - k for 36 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:04,266 - INFO - k for 37 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:06,197 - INFO - k for 38 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:25:06,933 - INFO - k for 39 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:07,683 - INFO - k for 42 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:09,948 - INFO - k for 43 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:25:11,423 - INFO - k for 46 in level 1: 3, labels:[0 1 2]
+2024-12-24 19:25:11,909 - INFO - k for 48 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:12,658 - INFO - k for 49 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:16,135 - INFO - k for 50 in level 1: 4, labels:[0 1 2 3]
+2024-12-24 19:25:16,767 - INFO - k for 55 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:17,471 - INFO - k for 58 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:18,303 - INFO - k for 61 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:18,830 - INFO - k for 62 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:19,726 - INFO - k for 63 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:20,799 - INFO - k for 65 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:21,503 - INFO - k for 66 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:21,980 - INFO - k for 67 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:22,529 - INFO - k for 69 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:23,131 - INFO - k for 70 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:23,887 - INFO - k for 72 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:24,994 - INFO - k for 75 in level 1: 2, labels:[0 1]
+2024-12-24 19:25:40,529 - INFO - Final labels: 243
+2024-12-24 19:25:40,530 - INFO - Clustering completed in 297.65 seconds
+2024-12-24 19:25:40,595 - INFO - 
+=== Data Balancing ===
+2024-12-24 19:25:42,209 - INFO - Cluster 0 balanced: 1765 -> 1864 samples, classes:2
+2024-12-24 19:25:42,440 - INFO - Cluster 1 balanced: 4111 -> 4211 samples, classes:2
+2024-12-24 19:25:42,573 - INFO - Cluster 2 balanced: 14665 -> 14765 samples, classes:2
+2024-12-24 19:25:42,700 - INFO - Cluster 3 balanced: 12627 -> 12727 samples, classes:2
+2024-12-24 19:25:42,939 - INFO - Cluster 4 balanced: 24318 -> 24418 samples, classes:2
+2024-12-24 19:25:43,079 - INFO - Cluster 5 balanced: 21695 -> 21795 samples, classes:2
+2024-12-24 19:25:43,213 - INFO - Cluster 7 balanced: 21826 -> 21926 samples, classes:2
+2024-12-24 19:25:43,343 - INFO - Cluster 8 balanced: 14903 -> 15003 samples, classes:2
+2024-12-24 19:25:43,478 - INFO - Cluster 10 balanced: 10090 -> 10190 samples, classes:2
+2024-12-24 19:25:43,705 - INFO - Cluster 15 balanced: 1963 -> 2063 samples, classes:2
+2024-12-24 19:25:43,833 - INFO - Cluster 16 balanced: 5828 -> 5928 samples, classes:2
+2024-12-24 19:25:43,951 - INFO - Cluster 17 balanced: 5115 -> 5215 samples, classes:2
+2024-12-24 19:25:44,071 - INFO - Cluster 21 balanced: 4186 -> 4286 samples, classes:2
+2024-12-24 19:25:44,187 - INFO - Cluster 22 balanced: 7470 -> 7570 samples, classes:2
+2024-12-24 19:25:44,307 - INFO - Cluster 25 balanced: 4540 -> 4551 samples, classes:2
+2024-12-24 19:25:44,537 - INFO - Cluster 28 balanced: 5731 -> 5831 samples, classes:2
+2024-12-24 19:25:44,676 - INFO - Cluster 30 balanced: 25633 -> 25733 samples, classes:2
+2024-12-24 19:25:44,905 - INFO - Cluster 31 balanced: 2346 -> 2420 samples, classes:2
+2024-12-24 19:25:45,043 - INFO - Cluster 32 balanced: 15343 -> 15443 samples, classes:2
+2024-12-24 19:25:45,274 - INFO - Cluster 33 balanced: 7252 -> 7272 samples, classes:2
+2024-12-24 19:25:45,516 - INFO - Cluster 34 balanced: 2985 -> 3085 samples, classes:2
+2024-12-24 19:25:45,649 - INFO - Cluster 36 balanced: 13756 -> 13856 samples, classes:2
+2024-12-24 19:25:45,774 - INFO - Cluster 38 balanced: 7146 -> 7246 samples, classes:2
+2024-12-24 19:25:46,002 - INFO - Cluster 39 balanced: 2661 -> 2761 samples, classes:2
+2024-12-24 19:25:46,005 - INFO - Only one class in cluster 41
+2024-12-24 19:25:46,237 - INFO - Cluster 41 balanced: 11313 -> 11413 samples, classes:2
+2024-12-24 19:25:46,475 - INFO - Cluster 44 balanced: 8294 -> 8394 samples, classes:2
+2024-12-24 19:25:46,707 - INFO - Cluster 45 balanced: 6444 -> 6544 samples, classes:2
+2024-12-24 19:25:46,837 - INFO - Cluster 46 balanced: 10478 -> 10578 samples, classes:2
+2024-12-24 19:25:46,968 - INFO - Cluster 48 balanced: 27572 -> 27672 samples, classes:2
+2024-12-24 19:25:47,202 - INFO - Cluster 49 balanced: 7289 -> 7389 samples, classes:2
+2024-12-24 19:25:47,437 - INFO - Cluster 54 balanced: 1992 -> 2092 samples, classes:2
+2024-12-24 19:25:47,568 - INFO - Cluster 57 balanced: 3742 -> 3842 samples, classes:2
+2024-12-24 19:25:47,684 - INFO - Cluster 58 balanced: 4293 -> 4393 samples, classes:2
+2024-12-24 19:25:47,910 - INFO - Cluster 59 balanced: 7702 -> 7802 samples, classes:2
+2024-12-24 19:25:48,041 - INFO - Cluster 62 balanced: 5547 -> 5647 samples, classes:2
+2024-12-24 19:25:48,265 - INFO - Cluster 65 balanced: 1025 -> 1064 samples, classes:2
+2024-12-24 19:25:48,498 - INFO - Cluster 69 balanced: 5218 -> 5318 samples, classes:2
+2024-12-24 19:25:48,629 - INFO - Cluster 70 balanced: 5836 -> 5936 samples, classes:2
+2024-12-24 19:25:48,755 - INFO - Cluster 73 balanced: 7345 -> 7445 samples, classes:2
+2024-12-24 19:25:48,880 - INFO - Cluster 74 balanced: 5168 -> 5268 samples, classes:2
+2024-12-24 19:25:49,005 - INFO - Cluster 75 balanced: 10843 -> 10943 samples, classes:2
+2024-12-24 19:25:49,006 - INFO - Only one class in cluster 76
+2024-12-24 19:25:49,233 - INFO - Cluster 76 balanced: 17 -> 19 samples, classes:2
+2024-12-24 19:25:49,364 - INFO - Cluster 77 balanced: 9426 -> 9526 samples, classes:2
+2024-12-24 19:25:49,489 - INFO - Cluster 78 balanced: 8499 -> 8599 samples, classes:2
+2024-12-24 19:25:49,612 - INFO - Cluster 79 balanced: 3888 -> 3988 samples, classes:2
+2024-12-24 19:25:49,735 - INFO - Cluster 80 balanced: 4304 -> 4404 samples, classes:2
+2024-12-24 19:25:49,736 - INFO - Only one class in cluster 81
+2024-12-24 19:25:49,963 - INFO - Cluster 81 balanced: 9199 -> 9299 samples, classes:2
+2024-12-24 19:25:50,199 - INFO - Cluster 84 balanced: 8206 -> 8306 samples, classes:2
+2024-12-24 19:25:50,328 - INFO - Cluster 85 balanced: 7265 -> 7365 samples, classes:2
+2024-12-24 19:25:50,460 - INFO - Cluster 88 balanced: 31850 -> 31950 samples, classes:2
+2024-12-24 19:25:50,691 - INFO - Cluster 89 balanced: 2554 -> 2654 samples, classes:2
+2024-12-24 19:25:50,925 - INFO - Cluster 91 balanced: 12132 -> 12218 samples, classes:2
+2024-12-24 19:25:51,055 - INFO - Cluster 93 balanced: 3403 -> 3503 samples, classes:2
+2024-12-24 19:25:51,283 - INFO - Cluster 98 balanced: 3290 -> 3320 samples, classes:2
+2024-12-24 19:25:51,412 - INFO - Cluster 99 balanced: 11492 -> 11592 samples, classes:2
+2024-12-24 19:25:51,539 - INFO - Cluster 100 balanced: 15756 -> 15856 samples, classes:2
+2024-12-24 19:25:51,666 - INFO - Cluster 102 balanced: 5248 -> 5267 samples, classes:2
+2024-12-24 19:25:51,792 - INFO - Cluster 105 balanced: 4280 -> 4312 samples, classes:2
+2024-12-24 19:25:51,922 - INFO - Cluster 106 balanced: 18129 -> 18229 samples, classes:2
+2024-12-24 19:25:52,051 - INFO - Cluster 107 balanced: 9365 -> 9374 samples, classes:2
+2024-12-24 19:25:52,284 - INFO - Cluster 108 balanced: 5797 -> 5897 samples, classes:2
+2024-12-24 19:25:52,419 - INFO - Cluster 109 balanced: 4192 -> 4292 samples, classes:2
+2024-12-24 19:25:52,421 - INFO - Only one class in cluster 112
+2024-12-24 19:25:52,647 - INFO - Cluster 112 balanced: 7248 -> 7348 samples, classes:2
+2024-12-24 19:25:52,650 - INFO - Only one class in cluster 113
+2024-12-24 19:25:52,885 - INFO - Cluster 113 balanced: 24661 -> 24761 samples, classes:2
+2024-12-24 19:25:52,886 - INFO - Only one class in cluster 114
+2024-12-24 19:25:53,115 - INFO - Cluster 114 balanced: 1914 -> 2014 samples, classes:2
+2024-12-24 19:25:53,242 - INFO - Cluster 116 balanced: 3941 -> 4041 samples, classes:2
+2024-12-24 19:25:53,468 - INFO - Cluster 119 balanced: 10994 -> 11094 samples, classes:2
+2024-12-24 19:25:53,702 - INFO - Cluster 120 balanced: 7394 -> 7494 samples, classes:2
+2024-12-24 19:25:53,832 - INFO - Cluster 124 balanced: 8700 -> 8800 samples, classes:2
+2024-12-24 19:25:53,958 - INFO - Cluster 126 balanced: 11923 -> 11946 samples, classes:2
+2024-12-24 19:25:54,081 - INFO - Cluster 127 balanced: 8119 -> 8219 samples, classes:2
+2024-12-24 19:25:54,204 - INFO - Cluster 128 balanced: 5644 -> 5744 samples, classes:2
+2024-12-24 19:25:54,331 - INFO - Cluster 129 balanced: 23192 -> 23292 samples, classes:2
+2024-12-24 19:25:54,461 - INFO - Cluster 132 balanced: 4754 -> 4760 samples, classes:2
+2024-12-24 19:25:54,585 - INFO - Cluster 133 balanced: 7100 -> 7200 samples, classes:2
+2024-12-24 19:25:54,712 - INFO - Cluster 136 balanced: 5075 -> 5175 samples, classes:2
+2024-12-24 19:25:54,834 - INFO - Cluster 137 balanced: 3681 -> 3781 samples, classes:2
+2024-12-24 19:25:55,065 - INFO - Cluster 144 balanced: 1681 -> 1762 samples, classes:2
+2024-12-24 19:25:55,197 - INFO - Cluster 145 balanced: 19344 -> 19444 samples, classes:2
+2024-12-24 19:25:55,327 - INFO - Cluster 148 balanced: 15381 -> 15481 samples, classes:2
+2024-12-24 19:25:55,454 - INFO - Cluster 152 balanced: 5314 -> 5414 samples, classes:2
+2024-12-24 19:25:55,581 - INFO - Cluster 153 balanced: 12441 -> 12541 samples, classes:2
+2024-12-24 19:25:55,704 - INFO - Cluster 154 balanced: 5283 -> 5383 samples, classes:2
+2024-12-24 19:25:55,929 - INFO - Cluster 156 balanced: 7010 -> 7055 samples, classes:2
+2024-12-24 19:25:56,061 - INFO - Cluster 161 balanced: 15028 -> 15128 samples, classes:2
+2024-12-24 19:25:56,185 - INFO - Cluster 163 balanced: 14296 -> 14396 samples, classes:2
+2024-12-24 19:25:56,412 - INFO - Cluster 165 balanced: 8779 -> 8879 samples, classes:2
+2024-12-24 19:25:56,638 - INFO - Cluster 167 balanced: 857 -> 903 samples, classes:2
+2024-12-24 19:25:56,765 - INFO - Cluster 169 balanced: 9409 -> 9509 samples, classes:2
+2024-12-24 19:25:56,767 - INFO - Only one class in cluster 172
+2024-12-24 19:25:56,989 - INFO - Cluster 172 balanced: 2038 -> 2138 samples, classes:2
+2024-12-24 19:25:57,113 - INFO - Cluster 173 balanced: 5570 -> 5670 samples, classes:2
+2024-12-24 19:25:57,236 - INFO - Cluster 178 balanced: 2536 -> 2605 samples, classes:2
+2024-12-24 19:25:57,360 - INFO - Cluster 180 balanced: 9569 -> 9663 samples, classes:2
+2024-12-24 19:25:57,484 - INFO - Cluster 184 balanced: 8176 -> 8276 samples, classes:2
+2024-12-24 19:25:57,605 - INFO - Cluster 186 balanced: 4157 -> 4257 samples, classes:2
+2024-12-24 19:25:57,837 - INFO - Cluster 199 balanced: 12076 -> 12176 samples, classes:2
+2024-12-24 19:25:58,063 - INFO - Cluster 200 balanced: 2160 -> 2240 samples, classes:2
+2024-12-24 19:25:58,191 - INFO - Cluster 205 balanced: 11293 -> 11393 samples, classes:2
+2024-12-24 19:25:58,313 - INFO - Cluster 206 balanced: 15229 -> 15329 samples, classes:2
+2024-12-24 19:25:58,540 - INFO - Cluster 208 balanced: 11332 -> 11432 samples, classes:2
+2024-12-24 19:25:58,667 - INFO - Cluster 213 balanced: 1685 -> 1745 samples, classes:2
+2024-12-24 19:25:58,789 - INFO - Cluster 214 balanced: 8726 -> 8826 samples, classes:2
+2024-12-24 19:25:59,172 - INFO - Cluster 215 balanced: 7814 -> 7914 samples, classes:2
+2024-12-24 19:25:59,174 - INFO - Only one class in cluster 219
+2024-12-24 19:25:59,398 - INFO - Cluster 219 balanced: 1996 -> 2096 samples, classes:2
+2024-12-24 19:25:59,525 - INFO - Cluster 224 balanced: 5618 -> 5718 samples, classes:2
+2024-12-24 19:25:59,747 - INFO - Cluster 226 balanced: 8530 -> 8630 samples, classes:2
+2024-12-24 19:25:59,974 - INFO - Cluster 228 balanced: 2433 -> 2459 samples, classes:2
+2024-12-24 19:26:00,097 - INFO - Cluster 229 balanced: 2750 -> 2795 samples, classes:2
+2024-12-24 19:26:00,206 - INFO - Cluster 230 balanced: 1509 -> 1512 samples, classes:2
+2024-12-24 19:26:00,315 - INFO - Cluster 232 balanced: 3131 -> 3196 samples, classes:2
+2024-12-24 19:26:00,316 - INFO - Only one class in cluster 233
+2024-12-24 19:26:00,533 - INFO - Cluster 233 balanced: 1685 -> 1785 samples, classes:2
+2024-12-24 19:26:00,534 - INFO - Only one class in cluster 234
+2024-12-24 19:26:00,762 - INFO - Cluster 234 balanced: 4583 -> 4683 samples, classes:2
+2024-12-24 19:26:00,987 - INFO - Cluster 235 balanced: 4437 -> 4537 samples, classes:2
+2024-12-24 19:26:01,215 - INFO - Cluster 240 balanced: 6710 -> 6810 samples, classes:2
+2024-12-24 19:26:01,342 - INFO - Cluster 241 balanced: 8692 -> 8792 samples, classes:2
+2024-12-24 19:26:01,564 - INFO - Cluster 242 balanced: 1826 -> 1843 samples, classes:2
+2024-12-24 19:26:01,574 - INFO - 
+Data balancing completed in 20.98 seconds
+2024-12-24 19:26:01,574 - INFO - === Feature Processing ===
+2024-12-24 19:26:01,574 - INFO - === Feature Construction ===
+2024-12-24 19:26:44,708 - INFO - Feature construction completed in 43.13 seconds
+2024-12-24 19:26:44,712 - INFO - === Mutual Info and QBSOFS ===
+2024-12-24 19:26:48,570 - INFO - Cluster 0: Selected 412 features
+2024-12-24 19:26:57,232 - INFO - Cluster 1: Selected 447 features
+2024-12-24 19:27:33,116 - INFO - Cluster 2: Selected 449 features
+2024-12-24 19:28:01,426 - INFO - Cluster 3: Selected 420 features
+2024-12-24 19:28:57,616 - INFO - Cluster 4: Selected 407 features
+2024-12-24 19:29:45,945 - INFO - Cluster 5: Selected 402 features
+2024-12-24 19:30:04,226 - INFO - Cluster 6: Selected 450 features
+2024-12-24 19:30:59,354 - INFO - Cluster 7: Selected 452 features
+2024-12-24 19:31:34,480 - INFO - Cluster 8: Selected 431 features
+2024-12-24 19:32:53,971 - INFO - Cluster 9: Selected 457 features
+2024-12-24 19:33:16,161 - INFO - Cluster 10: Selected 435 features
+2024-12-24 19:33:29,853 - INFO - Cluster 11: Selected 458 features
+2024-12-24 19:33:36,091 - INFO - Cluster 12: Selected 431 features
+2024-12-24 19:34:18,614 - INFO - Cluster 13: Selected 456 features
+2024-12-24 19:35:00,934 - INFO - Cluster 14: Selected 455 features
+2024-12-24 19:35:05,057 - INFO - Cluster 15: Selected 434 features
+2024-12-24 19:35:17,751 - INFO - Cluster 16: Selected 438 features
+2024-12-24 19:35:29,279 - INFO - Cluster 17: Selected 457 features
+2024-12-24 19:36:12,046 - INFO - Cluster 18: Selected 455 features
+2024-12-24 19:36:23,126 - INFO - Cluster 19: Selected 453 features
+2024-12-24 19:36:32,257 - INFO - Cluster 20: Selected 453 features
+2024-12-24 19:36:40,412 - INFO - Cluster 21: Selected 411 features
+2024-12-24 19:36:56,934 - INFO - Cluster 22: Selected 435 features
+2024-12-24 19:37:30,330 - INFO - Cluster 23: Selected 451 features
+2024-12-24 19:37:44,181 - INFO - Cluster 24: Selected 452 features
+2024-12-24 19:37:53,007 - INFO - Cluster 25: Selected 417 features
+2024-12-24 19:38:21,034 - INFO - Cluster 26: Selected 458 features
+2024-12-24 19:38:42,592 - INFO - Cluster 27: Selected 450 features
+2024-12-24 19:38:55,640 - INFO - Cluster 28: Selected 456 features
+2024-12-24 19:39:26,937 - INFO - Cluster 29: Selected 455 features
+2024-12-24 19:40:30,245 - INFO - Cluster 30: Selected 429 features
+2024-12-24 19:40:35,021 - INFO - Cluster 31: Selected 431 features
+2024-12-24 19:41:13,329 - INFO - Cluster 32: Selected 455 features
+2024-12-24 19:41:29,338 - INFO - Cluster 33: Selected 442 features
+2024-12-24 19:41:35,547 - INFO - Cluster 34: Selected 429 features
+2024-12-24 19:41:47,996 - INFO - Cluster 35: Selected 447 features
+2024-12-24 19:42:18,839 - INFO - Cluster 36: Selected 414 features
+2024-12-24 19:42:32,146 - INFO - Cluster 37: Selected 434 features
+2024-12-24 19:42:47,905 - INFO - Cluster 38: Selected 434 features
+2024-12-24 19:42:53,749 - INFO - Cluster 39: Selected 451 features
+2024-12-24 19:43:19,087 - INFO - Cluster 40: Selected 457 features
+2024-12-24 19:43:46,091 - INFO - Cluster 41: Selected 453 features
+2024-12-24 19:44:31,759 - INFO - Cluster 42: Selected 443 features
+2024-12-24 19:44:46,584 - INFO - Cluster 43: Selected 455 features
+2024-12-24 19:45:04,255 - INFO - Cluster 44: Selected 433 features
+2024-12-24 19:45:17,956 - INFO - Cluster 45: Selected 423 features
+2024-12-24 19:45:40,245 - INFO - Cluster 46: Selected 407 features
+2024-12-24 19:46:03,280 - INFO - Cluster 47: Selected 455 features
+2024-12-24 19:47:08,844 - INFO - Cluster 48: Selected 411 features
+2024-12-24 19:47:24,174 - INFO - Cluster 49: Selected 414 features
+2024-12-24 19:47:26,715 - INFO - Cluster 50: Selected 447 features
+2024-12-24 19:47:31,466 - INFO - Cluster 51: Selected 412 features
+2024-12-24 19:48:03,809 - INFO - Cluster 52: Selected 452 features
+2024-12-24 19:48:42,049 - INFO - Cluster 53: Selected 458 features
+2024-12-24 19:48:46,202 - INFO - Cluster 54: Selected 436 features
+2024-12-24 19:49:42,784 - INFO - Cluster 55: Selected 456 features
+2024-12-24 19:50:19,678 - INFO - Cluster 56: Selected 452 features
+2024-12-24 19:50:27,946 - INFO - Cluster 57: Selected 451 features
+2024-12-24 19:50:36,301 - INFO - Cluster 58: Selected 412 features
+2024-12-24 19:50:53,321 - INFO - Cluster 59: Selected 433 features
+2024-12-24 19:51:13,220 - INFO - Cluster 60: Selected 445 features
+2024-12-24 19:51:32,534 - INFO - Cluster 61: Selected 451 features
+2024-12-24 19:51:44,973 - INFO - Cluster 62: Selected 453 features
+2024-12-24 19:51:49,366 - INFO - Cluster 63: Selected 446 features
+2024-12-24 19:51:51,826 - INFO - Cluster 64: Selected 444 features
+2024-12-24 19:51:54,077 - INFO - Cluster 65: Selected 425 features
+2024-12-24 19:52:37,774 - INFO - Cluster 66: Selected 448 features
+2024-12-24 19:52:50,692 - INFO - Cluster 67: Selected 450 features
+2024-12-24 19:53:10,947 - INFO - Cluster 68: Selected 454 features
+2024-12-24 19:53:22,117 - INFO - Cluster 69: Selected 434 features
+2024-12-24 19:53:34,784 - INFO - Cluster 70: Selected 437 features
+2024-12-24 19:53:41,926 - INFO - Cluster 71: Selected 449 features
+2024-12-24 19:54:19,626 - INFO - Cluster 72: Selected 453 features
+2024-12-24 19:54:35,946 - INFO - Cluster 73: Selected 436 features
+2024-12-24 19:54:46,648 - INFO - Cluster 74: Selected 421 features
+2024-12-24 19:55:11,250 - INFO - Cluster 75: Selected 435 features
+2024-12-24 19:55:11,930 - INFO - Cluster 76: Selected 435 features
+2024-12-24 19:55:32,340 - INFO - Cluster 77: Selected 433 features
+2024-12-24 19:55:51,571 - INFO - Cluster 78: Selected 459 features
+2024-12-24 19:55:59,488 - INFO - Cluster 79: Selected 434 features
+2024-12-24 19:56:08,473 - INFO - Cluster 80: Selected 443 features
+2024-12-24 19:56:28,125 - INFO - Cluster 81: Selected 429 features
+2024-12-24 19:56:50,446 - INFO - Cluster 82: Selected 456 features
+2024-12-24 19:57:14,549 - INFO - Cluster 83: Selected 450 features
+2024-12-24 19:57:32,524 - INFO - Cluster 84: Selected 445 features
+2024-12-24 19:57:49,156 - INFO - Cluster 85: Selected 453 features
+2024-12-24 19:58:26,059 - INFO - Cluster 86: Selected 433 features
+2024-12-24 19:58:30,533 - INFO - Cluster 87: Selected 438 features
+2024-12-24 19:59:52,489 - INFO - Cluster 88: Selected 455 features
+2024-12-24 19:59:58,202 - INFO - Cluster 89: Selected 458 features
+2024-12-24 20:00:00,672 - INFO - Cluster 90: Selected 434 features
+2024-12-24 20:00:29,967 - INFO - Cluster 91: Selected 457 features
+2024-12-24 20:00:40,601 - INFO - Cluster 92: Selected 459 features
+2024-12-24 20:00:48,138 - INFO - Cluster 93: Selected 455 features
+2024-12-24 20:00:55,932 - INFO - Cluster 94: Selected 446 features
+2024-12-24 20:01:14,579 - INFO - Cluster 95: Selected 443 features
+2024-12-24 20:01:35,033 - INFO - Cluster 96: Selected 424 features
+2024-12-24 20:01:53,516 - INFO - Cluster 97: Selected 445 features
+2024-12-24 20:02:00,164 - INFO - Cluster 98: Selected 425 features
+2024-12-24 20:02:26,666 - INFO - Cluster 99: Selected 439 features
+2024-12-24 20:03:03,729 - INFO - Cluster 100: Selected 427 features
+2024-12-24 20:03:18,410 - INFO - Cluster 101: Selected 453 features
+2024-12-24 20:03:29,838 - INFO - Cluster 102: Selected 448 features
+2024-12-24 20:04:02,547 - INFO - Cluster 103: Selected 452 features
+2024-12-24 20:04:14,253 - INFO - Cluster 104: Selected 443 features
+2024-12-24 20:04:22,981 - INFO - Cluster 105: Selected 440 features
+2024-12-24 20:05:05,530 - INFO - Cluster 106: Selected 447 features
+2024-12-24 20:05:25,664 - INFO - Cluster 107: Selected 436 features
+2024-12-24 20:05:38,189 - INFO - Cluster 108: Selected 436 features
+2024-12-24 20:05:47,010 - INFO - Cluster 109: Selected 447 features
+2024-12-24 20:06:22,396 - INFO - Cluster 110: Selected 459 features
+2024-12-24 20:06:23,464 - INFO - Cluster 111: Selected 423 features
+2024-12-24 20:06:39,625 - INFO - Cluster 112: Selected 438 features
+2024-12-24 20:07:41,928 - INFO - Cluster 113: Selected 443 features
+2024-12-24 20:07:46,160 - INFO - Cluster 114: Selected 445 features
+2024-12-24 20:07:50,480 - INFO - Cluster 115: Selected 440 features
+2024-12-24 20:07:58,206 - INFO - Cluster 116: Selected 417 features
+2024-12-24 20:08:12,611 - INFO - Cluster 117: Selected 454 features
+2024-12-24 20:08:39,412 - INFO - Cluster 118: Selected 455 features
+2024-12-24 20:09:05,903 - INFO - Cluster 119: Selected 458 features
+2024-12-24 20:09:22,967 - INFO - Cluster 120: Selected 451 features
+2024-12-24 20:09:43,003 - INFO - Cluster 121: Selected 430 features
+2024-12-24 20:10:00,321 - INFO - Cluster 122: Selected 442 features
+2024-12-24 20:10:07,788 - INFO - Cluster 123: Selected 449 features
+2024-12-24 20:10:26,312 - INFO - Cluster 124: Selected 429 features
+2024-12-24 20:10:52,391 - INFO - Cluster 125: Selected 457 features
+2024-12-24 20:11:19,735 - INFO - Cluster 126: Selected 437 features
+2024-12-24 20:11:37,749 - INFO - Cluster 127: Selected 451 features
+2024-12-24 20:11:50,063 - INFO - Cluster 128: Selected 440 features
+2024-12-24 20:12:46,772 - INFO - Cluster 129: Selected 436 features
+2024-12-24 20:12:48,291 - INFO - Cluster 130: Selected 448 features
+2024-12-24 20:13:08,147 - INFO - Cluster 131: Selected 427 features
+2024-12-24 20:13:17,714 - INFO - Cluster 132: Selected 432 features
+2024-12-24 20:13:33,831 - INFO - Cluster 133: Selected 447 features
+2024-12-24 20:13:38,371 - INFO - Cluster 134: Selected 439 features
+2024-12-24 20:14:08,344 - INFO - Cluster 135: Selected 425 features
+2024-12-24 20:14:19,315 - INFO - Cluster 136: Selected 438 features
+2024-12-24 20:14:26,543 - INFO - Cluster 137: Selected 402 features
+2024-12-24 20:14:57,502 - INFO - Cluster 138: Selected 436 features
+2024-12-24 20:15:07,997 - INFO - Cluster 139: Selected 444 features
+2024-12-24 20:15:41,365 - INFO - Cluster 140: Selected 452 features
+2024-12-24 20:15:49,332 - INFO - Cluster 141: Selected 438 features
+2024-12-24 20:16:07,961 - INFO - Cluster 142: Selected 437 features
+2024-12-24 20:16:15,082 - INFO - Cluster 143: Selected 441 features
+2024-12-24 20:16:18,773 - INFO - Cluster 144: Selected 439 features
+2024-12-24 20:17:05,169 - INFO - Cluster 145: Selected 450 features
+2024-12-24 20:17:12,536 - INFO - Cluster 146: Selected 445 features
+2024-12-24 20:17:21,816 - INFO - Cluster 147: Selected 436 features
+2024-12-24 20:18:00,221 - INFO - Cluster 148: Selected 457 features
+2024-12-24 20:18:16,125 - INFO - Cluster 149: Selected 437 features
+2024-12-24 20:18:25,734 - INFO - Cluster 150: Selected 438 features
+2024-12-24 20:18:49,707 - INFO - Cluster 151: Selected 438 features
+2024-12-24 20:19:01,279 - INFO - Cluster 152: Selected 442 features
+2024-12-24 20:19:30,421 - INFO - Cluster 153: Selected 439 features
+2024-12-24 20:19:42,010 - INFO - Cluster 154: Selected 444 features
+2024-12-24 20:19:52,457 - INFO - Cluster 155: Selected 441 features
+2024-12-24 20:20:08,109 - INFO - Cluster 156: Selected 446 features
+2024-12-24 20:20:24,178 - INFO - Cluster 157: Selected 455 features
+2024-12-24 20:20:33,226 - INFO - Cluster 158: Selected 451 features
+2024-12-24 20:20:45,047 - INFO - Cluster 159: Selected 453 features
+2024-12-24 20:20:55,689 - INFO - Cluster 160: Selected 452 features
+2024-12-24 20:21:32,722 - INFO - Cluster 161: Selected 450 features
+2024-12-24 20:21:39,466 - INFO - Cluster 162: Selected 455 features
+2024-12-24 20:22:13,737 - INFO - Cluster 163: Selected 439 features
+2024-12-24 20:22:20,155 - INFO - Cluster 164: Selected 427 features
+2024-12-24 20:22:38,804 - INFO - Cluster 165: Selected 428 features
+2024-12-24 20:23:12,198 - INFO - Cluster 166: Selected 454 features
+2024-12-24 20:23:14,283 - INFO - Cluster 167: Selected 434 features
+2024-12-24 20:23:39,128 - INFO - Cluster 168: Selected 425 features
+2024-12-24 20:23:58,714 - INFO - Cluster 169: Selected 416 features
+2024-12-24 20:24:18,488 - INFO - Cluster 170: Selected 436 features
+2024-12-24 20:24:39,495 - INFO - Cluster 171: Selected 440 features
+2024-12-24 20:24:43,546 - INFO - Cluster 172: Selected 415 features
+2024-12-24 20:24:55,802 - INFO - Cluster 173: Selected 445 features
+2024-12-24 20:25:17,012 - INFO - Cluster 174: Selected 435 features
+2024-12-24 20:25:32,318 - INFO - Cluster 175: Selected 452 features
+2024-12-24 20:25:48,735 - INFO - Cluster 176: Selected 449 features
+2024-12-24 20:26:10,561 - INFO - Cluster 177: Selected 442 features
+2024-12-24 20:26:15,581 - INFO - Cluster 178: Selected 409 features
+2024-12-24 20:26:31,493 - INFO - Cluster 179: Selected 446 features
+2024-12-24 20:26:51,519 - INFO - Cluster 180: Selected 419 features
+2024-12-24 20:27:01,457 - INFO - Cluster 181: Selected 451 features
+2024-12-24 20:27:02,855 - INFO - Cluster 182: Selected 421 features
+2024-12-24 20:27:48,608 - INFO - Cluster 183: Selected 450 features
+2024-12-24 20:28:06,814 - INFO - Cluster 184: Selected 451 features
+2024-12-24 20:28:23,354 - INFO - Cluster 185: Selected 406 features
+2024-12-24 20:28:31,921 - INFO - Cluster 186: Selected 437 features
+2024-12-24 20:28:44,863 - INFO - Cluster 187: Selected 428 features
+2024-12-24 20:28:50,508 - INFO - Cluster 188: Selected 459 features
+2024-12-24 20:29:06,737 - INFO - Cluster 189: Selected 448 features
+2024-12-24 20:29:19,233 - INFO - Cluster 190: Selected 445 features
+2024-12-24 20:29:21,088 - INFO - Cluster 191: Selected 443 features
+2024-12-24 20:29:25,896 - INFO - Cluster 192: Selected 447 features
+2024-12-24 20:29:30,570 - INFO - Cluster 193: Selected 440 features
+2024-12-24 20:29:59,597 - INFO - Cluster 194: Selected 450 features
+2024-12-24 20:30:16,215 - INFO - Cluster 195: Selected 433 features
+2024-12-24 20:30:24,275 - INFO - Cluster 196: Selected 451 features
+2024-12-24 20:30:31,776 - INFO - Cluster 197: Selected 446 features
+2024-12-24 20:30:58,814 - INFO - Cluster 198: Selected 446 features
+2024-12-24 20:31:28,279 - INFO - Cluster 199: Selected 459 features
+2024-12-24 20:31:32,647 - INFO - Cluster 200: Selected 426 features
+2024-12-24 20:31:36,457 - INFO - Cluster 201: Selected 437 features
+2024-12-24 20:31:54,420 - INFO - Cluster 202: Selected 420 features
+2024-12-24 20:32:03,575 - INFO - Cluster 203: Selected 421 features
+2024-12-24 20:32:10,115 - INFO - Cluster 204: Selected 440 features
+2024-12-24 20:32:36,998 - INFO - Cluster 205: Selected 454 features
+2024-12-24 20:33:11,829 - INFO - Cluster 206: Selected 417 features
+2024-12-24 20:33:15,925 - INFO - Cluster 207: Selected 453 features
+2024-12-24 20:33:42,262 - INFO - Cluster 208: Selected 441 features
+2024-12-24 20:33:45,597 - INFO - Cluster 209: Selected 422 features
+2024-12-24 20:33:55,193 - INFO - Cluster 210: Selected 417 features
+2024-12-24 20:34:16,395 - INFO - Cluster 211: Selected 436 features
+2024-12-24 20:34:23,749 - INFO - Cluster 212: Selected 435 features
+2024-12-24 20:34:27,182 - INFO - Cluster 213: Selected 412 features
+2024-12-24 20:34:45,880 - INFO - Cluster 214: Selected 433 features
+2024-12-24 20:35:03,813 - INFO - Cluster 215: Selected 446 features
+2024-12-24 20:35:25,343 - INFO - Cluster 216: Selected 424 features
+2024-12-24 20:35:31,455 - INFO - Cluster 217: Selected 434 features
+2024-12-24 20:35:39,858 - INFO - Cluster 218: Selected 452 features
+2024-12-24 20:35:44,103 - INFO - Cluster 219: Selected 444 features
+2024-12-24 20:36:21,862 - INFO - Cluster 220: Selected 444 features
+2024-12-24 20:36:25,290 - INFO - Cluster 221: Selected 456 features
+2024-12-24 20:36:36,969 - INFO - Cluster 222: Selected 433 features
+2024-12-24 20:36:50,099 - INFO - Cluster 223: Selected 440 features
+2024-12-24 20:37:01,603 - INFO - Cluster 224: Selected 414 features
+2024-12-24 20:37:17,423 - INFO - Cluster 225: Selected 445 features
+2024-12-24 20:37:36,261 - INFO - Cluster 226: Selected 448 features
+2024-12-24 20:37:47,917 - INFO - Cluster 227: Selected 447 features
+2024-12-24 20:37:52,720 - INFO - Cluster 228: Selected 429 features
+2024-12-24 20:37:58,019 - INFO - Cluster 229: Selected 405 features
+2024-12-24 20:38:01,295 - INFO - Cluster 230: Selected 447 features
+2024-12-24 20:38:06,883 - INFO - Cluster 231: Selected 422 features
+2024-12-24 20:38:13,550 - INFO - Cluster 232: Selected 443 features
+2024-12-24 20:38:17,236 - INFO - Cluster 233: Selected 433 features
+2024-12-24 20:38:26,898 - INFO - Cluster 234: Selected 446 features
+2024-12-24 20:38:36,052 - INFO - Cluster 235: Selected 437 features
+2024-12-24 20:38:38,985 - INFO - Cluster 236: Selected 455 features
+2024-12-24 20:38:45,874 - INFO - Cluster 237: Selected 450 features
+2024-12-24 20:38:48,596 - INFO - Cluster 238: Selected 451 features
+2024-12-24 20:38:54,811 - INFO - Cluster 239: Selected 416 features
+2024-12-24 20:39:09,954 - INFO - Cluster 240: Selected 448 features
+2024-12-24 20:39:27,147 - INFO - Cluster 241: Selected 401 features
+2024-12-24 20:39:30,855 - INFO - Cluster 242: Selected 424 features
+2024-12-24 20:39:30,855 - INFO - Mutual info and QBSOFS completed in 4366.14 seconds
+2024-12-24 20:39:30,855 - INFO - 
+Feature processing completed in 4409.28 seconds
+2024-12-24 20:39:30,855 - INFO - 
+=== SVM Training and Testing ===
+2024-12-24 20:39:30,855 - INFO - 
+=== Hyperparameter Tuning ===
+2024-12-24 20:40:03,673 - INFO - Best parameters for cluster 0: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 20:40:07,596 - INFO - Best parameters for cluster 1: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 20:41:34,237 - INFO - Best parameters for cluster 2: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 20:42:31,734 - INFO - Best parameters for cluster 3: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 20:42:51,623 - INFO - Best parameters for cluster 4: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 20:46:10,088 - INFO - Best parameters for cluster 5: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 20:46:54,566 - INFO - Best parameters for cluster 6: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 20:49:06,495 - INFO - Best parameters for cluster 7: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 20:50:12,247 - INFO - Best parameters for cluster 8: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 20:57:45,986 - INFO - Best parameters for cluster 9: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 20:58:15,847 - INFO - Best parameters for cluster 10: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 20:58:55,227 - INFO - Best parameters for cluster 11: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 20:59:03,363 - INFO - Best parameters for cluster 12: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:01:54,114 - INFO - Best parameters for cluster 13: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:04:46,632 - INFO - Best parameters for cluster 14: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:04:50,772 - INFO - Best parameters for cluster 15: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:05:13,485 - INFO - Best parameters for cluster 16: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:05:28,064 - INFO - Best parameters for cluster 17: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 21:07:46,129 - INFO - Best parameters for cluster 18: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 21:08:12,678 - INFO - Best parameters for cluster 19: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 21:08:33,451 - INFO - Best parameters for cluster 20: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 21:08:41,271 - INFO - Best parameters for cluster 21: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:09:09,984 - INFO - Best parameters for cluster 22: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 21:10:49,848 - INFO - Best parameters for cluster 23: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:11:32,247 - INFO - Best parameters for cluster 24: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 21:11:43,665 - INFO - Best parameters for cluster 25: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:14:15,694 - INFO - Best parameters for cluster 26: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:15:39,871 - INFO - Best parameters for cluster 27: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:15:49,036 - INFO - Best parameters for cluster 28: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:17:56,063 - INFO - Best parameters for cluster 29: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 21:19:50,444 - INFO - Best parameters for cluster 30: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:19:54,101 - INFO - Best parameters for cluster 31: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 21:21:07,835 - INFO - Best parameters for cluster 32: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 21:21:46,054 - INFO - Best parameters for cluster 33: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 21:21:49,124 - INFO - Best parameters for cluster 34: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:22:29,891 - INFO - Best parameters for cluster 35: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:23:26,618 - INFO - Best parameters for cluster 36: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 21:23:58,184 - INFO - Best parameters for cluster 37: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 21:24:24,877 - INFO - Best parameters for cluster 38: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:24:29,300 - INFO - Best parameters for cluster 39: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:25:21,688 - INFO - Best parameters for cluster 40: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:25:28,387 - INFO - Best parameters for cluster 41: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:29:12,591 - INFO - Best parameters for cluster 42: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:30:17,852 - INFO - Best parameters for cluster 43: OrderedDict([('C', 4403.762515730915), ('decision_function_shape', 'ovr'), ('gamma', 16.978978984143858), ('kernel', 'poly')])
+2024-12-24 21:30:22,031 - INFO - Best parameters for cluster 44: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:30:25,564 - INFO - Best parameters for cluster 45: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:31:09,367 - INFO - Best parameters for cluster 46: OrderedDict([('C', 4403.762515730915), ('decision_function_shape', 'ovr'), ('gamma', 16.978978984143858), ('kernel', 'poly')])
+2024-12-24 21:32:11,656 - INFO - Best parameters for cluster 47: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:33:56,866 - INFO - Best parameters for cluster 48: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:34:11,084 - INFO - Best parameters for cluster 49: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:34:13,800 - INFO - Best parameters for cluster 50: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:34:22,439 - INFO - Best parameters for cluster 51: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:36:36,996 - INFO - Best parameters for cluster 52: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:39:07,038 - INFO - Best parameters for cluster 53: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 21:39:13,123 - INFO - Best parameters for cluster 54: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:42:54,646 - INFO - Best parameters for cluster 55: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:45:52,214 - INFO - Best parameters for cluster 56: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:46:01,388 - INFO - Best parameters for cluster 57: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:46:13,504 - INFO - Best parameters for cluster 58: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:46:36,888 - INFO - Best parameters for cluster 59: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:47:55,671 - INFO - Best parameters for cluster 60: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:48:50,582 - INFO - Best parameters for cluster 61: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:49:04,931 - INFO - Best parameters for cluster 62: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 21:49:07,177 - INFO - Best parameters for cluster 63: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:49:08,974 - INFO - Best parameters for cluster 64: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 21:49:10,123 - INFO - Best parameters for cluster 65: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 21:53:47,142 - INFO - Best parameters for cluster 66: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 21:55:06,783 - INFO - Best parameters for cluster 67: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 21:57:17,716 - INFO - Best parameters for cluster 68: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:57:30,355 - INFO - Best parameters for cluster 69: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:57:46,290 - INFO - Best parameters for cluster 70: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 21:58:04,298 - INFO - Best parameters for cluster 71: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 21:59:51,864 - INFO - Best parameters for cluster 72: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:00:07,623 - INFO - Best parameters for cluster 73: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:00:18,732 - INFO - Best parameters for cluster 74: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:01:29,019 - INFO - Best parameters for cluster 75: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:01:29,625 - INFO - Best parameters for cluster 76: OrderedDict([('C', 8.642410048155082), ('decision_function_shape', 'ovr'), ('gamma', 0.014260593207393805), ('kernel', 'sigmoid')])
+2024-12-24 22:01:50,979 - INFO - Best parameters for cluster 77: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:01:59,438 - INFO - Best parameters for cluster 78: OrderedDict([('C', 0.3619595990038508), ('decision_function_shape', 'ovr'), ('gamma', 0.00042575028888399856), ('kernel', 'poly')])
+2024-12-24 22:02:03,719 - INFO - Best parameters for cluster 79: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:02:10,414 - INFO - Best parameters for cluster 80: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:02:14,532 - INFO - Best parameters for cluster 81: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:03:09,919 - INFO - Best parameters for cluster 82: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:03:57,062 - INFO - Best parameters for cluster 83: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:04:09,105 - INFO - Best parameters for cluster 84: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:04:26,876 - INFO - Best parameters for cluster 85: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:06:05,860 - INFO - Best parameters for cluster 86: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:06:10,313 - INFO - Best parameters for cluster 87: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:07:30,789 - INFO - Best parameters for cluster 88: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:07:34,026 - INFO - Best parameters for cluster 89: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:07:35,810 - INFO - Best parameters for cluster 90: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:08:26,539 - INFO - Best parameters for cluster 91: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:08:33,001 - INFO - Best parameters for cluster 92: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:08:38,374 - INFO - Best parameters for cluster 93: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:08:49,438 - INFO - Best parameters for cluster 94: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:09:43,527 - INFO - Best parameters for cluster 95: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 22:10:46,694 - INFO - Best parameters for cluster 96: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:11:01,908 - INFO - Best parameters for cluster 97: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:11:08,875 - INFO - Best parameters for cluster 98: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:11:40,927 - INFO - Best parameters for cluster 99: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:12:22,948 - INFO - Best parameters for cluster 100: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:12:48,842 - INFO - Best parameters for cluster 101: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:13:00,892 - INFO - Best parameters for cluster 102: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:14:22,503 - INFO - Best parameters for cluster 103: OrderedDict([('C', 4403.762515730915), ('decision_function_shape', 'ovr'), ('gamma', 16.978978984143858), ('kernel', 'poly')])
+2024-12-24 22:14:48,015 - INFO - Best parameters for cluster 104: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:14:56,841 - INFO - Best parameters for cluster 105: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:16:28,847 - INFO - Best parameters for cluster 106: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:17:02,472 - INFO - Best parameters for cluster 107: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:17:07,004 - INFO - Best parameters for cluster 108: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:17:15,209 - INFO - Best parameters for cluster 109: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:17:58,729 - INFO - Best parameters for cluster 110: OrderedDict([('C', 315.62246465541887), ('decision_function_shape', 'ovo'), ('gamma', 0.3875095991685451), ('kernel', 'rbf')])
+2024-12-24 22:18:00,390 - INFO - Best parameters for cluster 111: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 22:18:04,155 - INFO - Best parameters for cluster 112: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:18:11,437 - INFO - Best parameters for cluster 113: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:18:12,659 - INFO - Best parameters for cluster 114: OrderedDict([('C', 315.62246465541887), ('decision_function_shape', 'ovo'), ('gamma', 0.3875095991685451), ('kernel', 'rbf')])
+2024-12-24 22:18:14,463 - INFO - Best parameters for cluster 115: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:18:20,088 - INFO - Best parameters for cluster 116: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:18:59,375 - INFO - Best parameters for cluster 117: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:20:00,221 - INFO - Best parameters for cluster 118: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:20:09,457 - INFO - Best parameters for cluster 119: OrderedDict([('C', 0.3619595990038508), ('decision_function_shape', 'ovr'), ('gamma', 0.00042575028888399856), ('kernel', 'poly')])
+2024-12-24 22:20:21,152 - INFO - Best parameters for cluster 120: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:21:04,452 - INFO - Best parameters for cluster 121: OrderedDict([('C', 4403.762515730915), ('decision_function_shape', 'ovr'), ('gamma', 16.978978984143858), ('kernel', 'poly')])
+2024-12-24 22:21:54,095 - INFO - Best parameters for cluster 122: OrderedDict([('C', 4403.762515730915), ('decision_function_shape', 'ovr'), ('gamma', 16.978978984143858), ('kernel', 'poly')])
+2024-12-24 22:22:01,013 - INFO - Best parameters for cluster 123: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:22:21,321 - INFO - Best parameters for cluster 124: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:23:51,728 - INFO - Best parameters for cluster 125: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:24:40,885 - INFO - Best parameters for cluster 126: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:24:50,987 - INFO - Best parameters for cluster 127: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:24:58,193 - INFO - Best parameters for cluster 128: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:26:26,029 - INFO - Best parameters for cluster 129: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:26:27,319 - INFO - Best parameters for cluster 130: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:27:07,979 - INFO - Best parameters for cluster 131: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:27:19,184 - INFO - Best parameters for cluster 132: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:27:30,135 - INFO - Best parameters for cluster 133: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:27:36,029 - INFO - Best parameters for cluster 134: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:29:42,120 - INFO - Best parameters for cluster 135: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:29:45,649 - INFO - Best parameters for cluster 136: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 22:29:50,742 - INFO - Best parameters for cluster 137: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:31:34,511 - INFO - Best parameters for cluster 138: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:31:54,523 - INFO - Best parameters for cluster 139: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:33:38,625 - INFO - Best parameters for cluster 140: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:33:58,236 - INFO - Best parameters for cluster 141: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:34:23,226 - INFO - Best parameters for cluster 142: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 22:34:27,713 - INFO - Best parameters for cluster 143: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:34:30,070 - INFO - Best parameters for cluster 144: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:36:10,695 - INFO - Best parameters for cluster 145: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:36:17,686 - INFO - Best parameters for cluster 146: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:36:32,456 - INFO - Best parameters for cluster 147: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:37:53,386 - INFO - Best parameters for cluster 148: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:38:27,465 - INFO - Best parameters for cluster 149: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:38:44,149 - INFO - Best parameters for cluster 150: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:40:00,833 - INFO - Best parameters for cluster 151: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:40:04,580 - INFO - Best parameters for cluster 152: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:40:46,497 - INFO - Best parameters for cluster 153: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:40:58,289 - INFO - Best parameters for cluster 154: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:41:19,048 - INFO - Best parameters for cluster 155: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:41:34,905 - INFO - Best parameters for cluster 156: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:42:00,886 - INFO - Best parameters for cluster 157: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:42:11,993 - INFO - Best parameters for cluster 158: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:42:34,606 - INFO - Best parameters for cluster 159: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:42:56,698 - INFO - Best parameters for cluster 160: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:44:05,923 - INFO - Best parameters for cluster 161: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:44:11,902 - INFO - Best parameters for cluster 162: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:44:52,135 - INFO - Best parameters for cluster 163: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:44:56,093 - INFO - Best parameters for cluster 164: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:45:00,003 - INFO - Best parameters for cluster 165: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:47:11,273 - INFO - Best parameters for cluster 166: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:47:14,844 - INFO - Best parameters for cluster 167: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:48:19,380 - INFO - Best parameters for cluster 168: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:48:38,271 - INFO - Best parameters for cluster 169: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:49:54,742 - INFO - Best parameters for cluster 170: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:50:44,317 - INFO - Best parameters for cluster 171: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:50:49,515 - INFO - Best parameters for cluster 172: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:50:59,248 - INFO - Best parameters for cluster 173: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:51:54,277 - INFO - Best parameters for cluster 174: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:52:17,764 - INFO - Best parameters for cluster 175: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:52:43,839 - INFO - Best parameters for cluster 176: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:53:11,034 - INFO - Best parameters for cluster 177: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:53:14,170 - INFO - Best parameters for cluster 178: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 22:53:50,795 - INFO - Best parameters for cluster 179: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:54:25,714 - INFO - Best parameters for cluster 180: OrderedDict([('C', 4403.762515730915), ('decision_function_shape', 'ovr'), ('gamma', 16.978978984143858), ('kernel', 'poly')])
+2024-12-24 22:54:39,327 - INFO - Best parameters for cluster 181: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:54:41,159 - INFO - Best parameters for cluster 182: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 22:58:42,890 - INFO - Best parameters for cluster 183: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:59:04,706 - INFO - Best parameters for cluster 184: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 22:59:49,016 - INFO - Best parameters for cluster 185: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 22:59:56,728 - INFO - Best parameters for cluster 186: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:00:30,692 - INFO - Best parameters for cluster 187: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:00:35,547 - INFO - Best parameters for cluster 188: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:01:04,798 - INFO - Best parameters for cluster 189: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:01:21,759 - INFO - Best parameters for cluster 190: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 23:01:24,648 - INFO - Best parameters for cluster 191: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:01:30,148 - INFO - Best parameters for cluster 192: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 23:01:37,257 - INFO - Best parameters for cluster 193: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:03:06,800 - INFO - Best parameters for cluster 194: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:03:57,303 - INFO - Best parameters for cluster 195: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:04:06,571 - INFO - Best parameters for cluster 196: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:04:20,826 - INFO - Best parameters for cluster 197: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:05:24,829 - INFO - Best parameters for cluster 198: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:05:32,742 - INFO - Best parameters for cluster 199: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:05:35,232 - INFO - Best parameters for cluster 200: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:05:39,428 - INFO - Best parameters for cluster 201: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:06:14,495 - INFO - Best parameters for cluster 202: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:06:22,457 - INFO - Best parameters for cluster 203: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:06:32,324 - INFO - Best parameters for cluster 204: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:07:10,898 - INFO - Best parameters for cluster 205: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:08:02,494 - INFO - Best parameters for cluster 206: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:08:06,787 - INFO - Best parameters for cluster 207: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:08:12,518 - INFO - Best parameters for cluster 208: OrderedDict([('C', 0.3619595990038508), ('decision_function_shape', 'ovr'), ('gamma', 0.00042575028888399856), ('kernel', 'poly')])
+2024-12-24 23:08:15,904 - INFO - Best parameters for cluster 209: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:08:37,126 - INFO - Best parameters for cluster 210: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:09:31,658 - INFO - Best parameters for cluster 211: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 23:09:41,719 - INFO - Best parameters for cluster 212: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 23:09:43,592 - INFO - Best parameters for cluster 213: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 23:09:58,944 - INFO - Best parameters for cluster 214: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:10:08,384 - INFO - Best parameters for cluster 215: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 23:10:53,413 - INFO - Best parameters for cluster 216: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:11:02,217 - INFO - Best parameters for cluster 217: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:11:12,447 - INFO - Best parameters for cluster 218: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:11:15,977 - INFO - Best parameters for cluster 219: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:13:12,288 - INFO - Best parameters for cluster 220: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:13:17,241 - INFO - Best parameters for cluster 221: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:13:40,566 - INFO - Best parameters for cluster 222: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 23:14:10,576 - INFO - Best parameters for cluster 223: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:14:15,479 - INFO - Best parameters for cluster 224: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:14:46,794 - INFO - Best parameters for cluster 225: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:15:00,026 - INFO - Best parameters for cluster 226: OrderedDict([('C', 0.3619595990038508), ('decision_function_shape', 'ovr'), ('gamma', 0.00042575028888399856), ('kernel', 'poly')])
+2024-12-24 23:15:24,567 - INFO - Best parameters for cluster 227: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:15:26,496 - INFO - Best parameters for cluster 228: OrderedDict([('C', 74.51164370027008), ('decision_function_shape', 'ovr'), ('gamma', 0.0009586124648548089), ('kernel', 'poly')])
+2024-12-24 23:15:30,843 - INFO - Best parameters for cluster 229: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 23:15:32,854 - INFO - Best parameters for cluster 230: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:15:39,987 - INFO - Best parameters for cluster 231: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:15:47,650 - INFO - Best parameters for cluster 232: OrderedDict([('C', 4403.762515730915), ('decision_function_shape', 'ovr'), ('gamma', 16.978978984143858), ('kernel', 'poly')])
+2024-12-24 23:15:49,936 - INFO - Best parameters for cluster 233: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:15:54,688 - INFO - Best parameters for cluster 234: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:16:05,203 - INFO - Best parameters for cluster 235: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:16:06,868 - INFO - Best parameters for cluster 236: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:16:10,679 - INFO - Best parameters for cluster 237: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:16:12,117 - INFO - Best parameters for cluster 238: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:16:22,859 - INFO - Best parameters for cluster 239: OrderedDict([('C', 0.00010691593986059968), ('decision_function_shape', 'ovr'), ('gamma', 2.803473570676248), ('kernel', 'poly')])
+2024-12-24 23:16:39,220 - INFO - Best parameters for cluster 240: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:17:02,374 - INFO - Best parameters for cluster 241: OrderedDict([('C', 249.13086324205238), ('decision_function_shape', 'ovo'), ('gamma', 0.14445128939086596), ('kernel', 'rbf')])
+2024-12-24 23:17:04,663 - INFO - Best parameters for cluster 242: OrderedDict([('C', 0.19091131576909443), ('decision_function_shape', 'ovr'), ('gamma', 39.55560151032723), ('kernel', 'poly')])
+2024-12-24 23:17:04,664 - INFO - 
+Hyperparameter tuning completed in 9453.81 seconds
+2024-12-24 23:17:04,664 - INFO - 
+=== SVM Training ===
+2024-12-24 23:17:04,664 - INFO - Using sequential training
+2024-12-24 23:29:09,054 - INFO - Cluster 0 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 0.15 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 79
+2024-12-24 23:29:09,055 - INFO - Cluster 1 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 0.05 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 23
+2024-12-24 23:29:09,055 - INFO - Cluster 2 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 4.17 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 340
+2024-12-24 23:29:09,055 - INFO - Cluster 3 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 2.22 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 215
+2024-12-24 23:29:09,055 - INFO - Cluster 4 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 0.36 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 18
+2024-12-24 23:29:09,055 - INFO - Cluster 5 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 8.53 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 480
+2024-12-24 23:29:09,055 - INFO - Cluster 6 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 1.62 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 275
+2024-12-24 23:29:09,055 - INFO - Cluster 7 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 6.23 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 357
+2024-12-24 23:29:09,055 - INFO - Cluster 8 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 3.58 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 371
+2024-12-24 23:29:09,055 - INFO - Cluster 9 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 84.90 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 4249
+2024-12-24 23:29:09,055 - INFO - Cluster 10 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 0.44 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 72
+2024-12-24 23:29:09,055 - INFO - Cluster 11 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 1.50 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 229
+2024-12-24 23:29:09,055 - INFO - Cluster 12 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 0.21 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 115
+2024-12-24 23:29:09,055 - INFO - Cluster 13 Training:
+2024-12-24 23:29:09,055 - INFO - Training time: 6.79 seconds
+2024-12-24 23:29:09,055 - INFO - Support vectors: 483
+2024-12-24 23:29:09,056 - INFO - Cluster 14 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 6.13 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 464
+2024-12-24 23:29:09,056 - INFO - Cluster 15 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 0.06 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 33
+2024-12-24 23:29:09,056 - INFO - Cluster 16 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 0.85 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 201
+2024-12-24 23:29:09,056 - INFO - Cluster 17 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 0.49 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 114
+2024-12-24 23:29:09,056 - INFO - Cluster 18 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 34.34 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 4454
+2024-12-24 23:29:09,056 - INFO - Cluster 19 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 0.66 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 165
+2024-12-24 23:29:09,056 - INFO - Cluster 20 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 0.38 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 105
+2024-12-24 23:29:09,056 - INFO - Cluster 21 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 0.17 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 43
+2024-12-24 23:29:09,056 - INFO - Cluster 22 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 0.92 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 188
+2024-12-24 23:29:09,056 - INFO - Cluster 23 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 3.40 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 303
+2024-12-24 23:29:09,056 - INFO - Cluster 24 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 1.11 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 142
+2024-12-24 23:29:09,056 - INFO - Cluster 25 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 0.47 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 166
+2024-12-24 23:29:09,056 - INFO - Cluster 26 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 7.66 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 678
+2024-12-24 23:29:09,056 - INFO - Cluster 27 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 7.75 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 996
+2024-12-24 23:29:09,056 - INFO - Cluster 28 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 0.19 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 38
+2024-12-24 23:29:09,056 - INFO - Cluster 29 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 20.93 seconds
+2024-12-24 23:29:09,056 - INFO - Support vectors: 2803
+2024-12-24 23:29:09,056 - INFO - Cluster 30 Training:
+2024-12-24 23:29:09,056 - INFO - Training time: 5.86 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 296
+2024-12-24 23:29:09,057 - INFO - Cluster 31 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 0.16 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 69
+2024-12-24 23:29:09,057 - INFO - Cluster 32 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 1.37 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 121
+2024-12-24 23:29:09,057 - INFO - Cluster 33 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 8.36 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 280
+2024-12-24 23:29:09,057 - INFO - Cluster 34 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 0.07 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 37
+2024-12-24 23:29:09,057 - INFO - Cluster 35 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 1.99 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 416
+2024-12-24 23:29:09,057 - INFO - Cluster 36 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 24.32 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 4748
+2024-12-24 23:29:09,057 - INFO - Cluster 37 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 0.79 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 160
+2024-12-24 23:29:09,057 - INFO - Cluster 38 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 0.81 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 135
+2024-12-24 23:29:09,057 - INFO - Cluster 39 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 0.08 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 23
+2024-12-24 23:29:09,057 - INFO - Cluster 40 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 2.30 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 298
+2024-12-24 23:29:09,057 - INFO - Cluster 41 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 0.21 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 32
+2024-12-24 23:29:09,057 - INFO - Cluster 42 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 10.47 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 599
+2024-12-24 23:29:09,057 - INFO - Cluster 43 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 1.55 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 224
+2024-12-24 23:29:09,057 - INFO - Cluster 44 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 0.10 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 22
+2024-12-24 23:29:09,057 - INFO - Cluster 45 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 0.09 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 23
+2024-12-24 23:29:09,057 - INFO - Cluster 46 Training:
+2024-12-24 23:29:09,057 - INFO - Training time: 1.69 seconds
+2024-12-24 23:29:09,057 - INFO - Support vectors: 216
+2024-12-24 23:29:09,057 - INFO - Cluster 47 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 4.05 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 563
+2024-12-24 23:29:09,058 - INFO - Cluster 48 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 4.75 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 235
+2024-12-24 23:29:09,058 - INFO - Cluster 49 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 0.36 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 54
+2024-12-24 23:29:09,058 - INFO - Cluster 50 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 0.06 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 79
+2024-12-24 23:29:09,058 - INFO - Cluster 51 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 0.23 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 165
+2024-12-24 23:29:09,058 - INFO - Cluster 52 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 6.05 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 547
+2024-12-24 23:29:09,058 - INFO - Cluster 53 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 37.45 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 999
+2024-12-24 23:29:09,058 - INFO - Cluster 54 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 0.03 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 13
+2024-12-24 23:29:09,058 - INFO - Cluster 55 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 10.39 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 561
+2024-12-24 23:29:09,058 - INFO - Cluster 56 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 6.52 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 548
+2024-12-24 23:29:09,058 - INFO - Cluster 57 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 0.19 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 73
+2024-12-24 23:29:09,058 - INFO - Cluster 58 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 0.48 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 169
+2024-12-24 23:29:09,058 - INFO - Cluster 59 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 0.56 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 58
+2024-12-24 23:29:09,058 - INFO - Cluster 60 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 1.05 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 113
+2024-12-24 23:29:09,058 - INFO - Cluster 61 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 1.36 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 194
+2024-12-24 23:29:09,058 - INFO - Cluster 62 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 0.50 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 126
+2024-12-24 23:29:09,058 - INFO - Cluster 63 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 0.06 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 43
+2024-12-24 23:29:09,058 - INFO - Cluster 64 Training:
+2024-12-24 23:29:09,058 - INFO - Training time: 0.13 seconds
+2024-12-24 23:29:09,058 - INFO - Support vectors: 64
+2024-12-24 23:29:09,059 - INFO - Cluster 65 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.02 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 32
+2024-12-24 23:29:09,059 - INFO - Cluster 66 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 75.91 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 4471
+2024-12-24 23:29:09,059 - INFO - Cluster 67 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 9.28 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 2934
+2024-12-24 23:29:09,059 - INFO - Cluster 68 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 6.65 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 608
+2024-12-24 23:29:09,059 - INFO - Cluster 69 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.18 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 34
+2024-12-24 23:29:09,059 - INFO - Cluster 70 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.88 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 222
+2024-12-24 23:29:09,059 - INFO - Cluster 71 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.40 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 139
+2024-12-24 23:29:09,059 - INFO - Cluster 72 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 3.76 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 297
+2024-12-24 23:29:09,059 - INFO - Cluster 73 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.50 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 79
+2024-12-24 23:29:09,059 - INFO - Cluster 74 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.88 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 196
+2024-12-24 23:29:09,059 - INFO - Cluster 75 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 7.35 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 872
+2024-12-24 23:29:09,059 - INFO - Cluster 76 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.00 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 2
+2024-12-24 23:29:09,059 - INFO - Cluster 77 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.86 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 114
+2024-12-24 23:29:09,059 - INFO - Cluster 78 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.28 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 34
+2024-12-24 23:29:09,059 - INFO - Cluster 79 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.10 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 25
+2024-12-24 23:29:09,059 - INFO - Cluster 80 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.40 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 116
+2024-12-24 23:29:09,059 - INFO - Cluster 81 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 0.20 seconds
+2024-12-24 23:29:09,059 - INFO - Support vectors: 36
+2024-12-24 23:29:09,059 - INFO - Cluster 82 Training:
+2024-12-24 23:29:09,059 - INFO - Training time: 1.99 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 225
+2024-12-24 23:29:09,060 - INFO - Cluster 83 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 1.34 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 68
+2024-12-24 23:29:09,060 - INFO - Cluster 84 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 0.63 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 75
+2024-12-24 23:29:09,060 - INFO - Cluster 85 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 0.55 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 96
+2024-12-24 23:29:09,060 - INFO - Cluster 86 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 8.14 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 634
+2024-12-24 23:29:09,060 - INFO - Cluster 87 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 0.20 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 124
+2024-12-24 23:29:09,060 - INFO - Cluster 88 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 3.74 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 144
+2024-12-24 23:29:09,060 - INFO - Cluster 89 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 0.18 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 54
+2024-12-24 23:29:09,060 - INFO - Cluster 90 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 0.06 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 62
+2024-12-24 23:29:09,060 - INFO - Cluster 91 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 8.41 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 685
+2024-12-24 23:29:09,060 - INFO - Cluster 92 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 0.44 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 99
+2024-12-24 23:29:09,060 - INFO - Cluster 93 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 0.15 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 61
+2024-12-24 23:29:09,060 - INFO - Cluster 94 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 0.61 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 130
+2024-12-24 23:29:09,060 - INFO - Cluster 95 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 10.04 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 1701
+2024-12-24 23:29:09,060 - INFO - Cluster 96 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 5.91 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 757
+2024-12-24 23:29:09,060 - INFO - Cluster 97 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 0.97 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 145
+2024-12-24 23:29:09,060 - INFO - Cluster 98 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 0.23 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 56
+2024-12-24 23:29:09,060 - INFO - Cluster 99 Training:
+2024-12-24 23:29:09,060 - INFO - Training time: 1.57 seconds
+2024-12-24 23:29:09,060 - INFO - Support vectors: 178
+2024-12-24 23:29:09,061 - INFO - Cluster 100 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 1.75 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 115
+2024-12-24 23:29:09,061 - INFO - Cluster 101 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 1.05 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 171
+2024-12-24 23:29:09,061 - INFO - Cluster 102 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 0.38 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 90
+2024-12-24 23:29:09,061 - INFO - Cluster 103 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 3.27 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 215
+2024-12-24 23:29:09,061 - INFO - Cluster 104 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 0.82 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 162
+2024-12-24 23:29:09,061 - INFO - Cluster 105 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 0.38 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 118
+2024-12-24 23:29:09,061 - INFO - Cluster 106 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 6.78 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 446
+2024-12-24 23:29:09,061 - INFO - Cluster 107 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 1.53 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 224
+2024-12-24 23:29:09,061 - INFO - Cluster 108 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 0.19 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 43
+2024-12-24 23:29:09,061 - INFO - Cluster 109 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 0.19 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 50
+2024-12-24 23:29:09,061 - INFO - Cluster 110 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 4.52 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 798
+2024-12-24 23:29:09,061 - INFO - Cluster 111 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 0.01 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 49
+2024-12-24 23:29:09,061 - INFO - Cluster 112 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 0.08 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 20
+2024-12-24 23:29:09,061 - INFO - Cluster 113 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 0.30 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 22
+2024-12-24 23:29:09,061 - INFO - Cluster 114 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 0.10 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 100
+2024-12-24 23:29:09,061 - INFO - Cluster 115 Training:
+2024-12-24 23:29:09,061 - INFO - Training time: 0.03 seconds
+2024-12-24 23:29:09,061 - INFO - Support vectors: 23
+2024-12-24 23:29:09,061 - INFO - Cluster 116 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 0.19 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 61
+2024-12-24 23:29:09,062 - INFO - Cluster 117 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 1.64 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 227
+2024-12-24 23:29:09,062 - INFO - Cluster 118 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 3.95 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 485
+2024-12-24 23:29:09,062 - INFO - Cluster 119 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 0.28 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 36
+2024-12-24 23:29:09,062 - INFO - Cluster 120 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 0.32 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 32
+2024-12-24 23:29:09,062 - INFO - Cluster 121 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 2.02 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 279
+2024-12-24 23:29:09,062 - INFO - Cluster 122 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 1.50 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 146
+2024-12-24 23:29:09,062 - INFO - Cluster 123 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 0.25 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 118
+2024-12-24 23:29:09,062 - INFO - Cluster 124 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 0.97 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 125
+2024-12-24 23:29:09,062 - INFO - Cluster 125 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 7.41 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 694
+2024-12-24 23:29:09,062 - INFO - Cluster 126 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 3.21 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 331
+2024-12-24 23:29:09,062 - INFO - Cluster 127 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 0.42 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 49
+2024-12-24 23:29:09,062 - INFO - Cluster 128 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 0.38 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 72
+2024-12-24 23:29:09,062 - INFO - Cluster 129 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 5.80 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 288
+2024-12-24 23:29:09,062 - INFO - Cluster 130 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 0.04 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 59
+2024-12-24 23:29:09,062 - INFO - Cluster 131 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 1.72 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 173
+2024-12-24 23:29:09,062 - INFO - Cluster 132 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 0.68 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 199
+2024-12-24 23:29:09,062 - INFO - Cluster 133 Training:
+2024-12-24 23:29:09,062 - INFO - Training time: 0.37 seconds
+2024-12-24 23:29:09,062 - INFO - Support vectors: 74
+2024-12-24 23:29:09,063 - INFO - Cluster 134 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 0.24 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 141
+2024-12-24 23:29:09,063 - INFO - Cluster 135 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 7.54 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 628
+2024-12-24 23:29:09,063 - INFO - Cluster 136 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 0.38 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 99
+2024-12-24 23:29:09,063 - INFO - Cluster 137 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 0.26 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 101
+2024-12-24 23:29:09,063 - INFO - Cluster 138 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 7.57 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 617
+2024-12-24 23:29:09,063 - INFO - Cluster 139 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 0.62 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 117
+2024-12-24 23:29:09,063 - INFO - Cluster 140 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 10.04 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 931
+2024-12-24 23:29:09,063 - INFO - Cluster 141 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 1.64 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 509
+2024-12-24 23:29:09,063 - INFO - Cluster 142 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 3.03 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 346
+2024-12-24 23:29:09,063 - INFO - Cluster 143 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 0.16 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 14
+2024-12-24 23:29:09,063 - INFO - Cluster 144 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 0.08 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 36
+2024-12-24 23:29:09,063 - INFO - Cluster 145 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 7.87 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 475
+2024-12-24 23:29:09,063 - INFO - Cluster 146 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 0.46 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 154
+2024-12-24 23:29:09,063 - INFO - Cluster 147 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 0.76 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 185
+2024-12-24 23:29:09,063 - INFO - Cluster 148 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 7.13 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 549
+2024-12-24 23:29:09,063 - INFO - Cluster 149 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 1.07 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 200
+2024-12-24 23:29:09,063 - INFO - Cluster 150 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 0.47 seconds
+2024-12-24 23:29:09,063 - INFO - Support vectors: 150
+2024-12-24 23:29:09,063 - INFO - Cluster 151 Training:
+2024-12-24 23:29:09,063 - INFO - Training time: 1.84 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 151
+2024-12-24 23:29:09,064 - INFO - Cluster 152 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 0.13 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 25
+2024-12-24 23:29:09,064 - INFO - Cluster 153 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 3.91 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 372
+2024-12-24 23:29:09,064 - INFO - Cluster 154 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 0.60 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 131
+2024-12-24 23:29:09,064 - INFO - Cluster 155 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 0.95 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 192
+2024-12-24 23:29:09,064 - INFO - Cluster 156 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 0.53 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 50
+2024-12-24 23:29:09,064 - INFO - Cluster 157 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 1.74 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 278
+2024-12-24 23:29:09,064 - INFO - Cluster 158 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 0.68 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 208
+2024-12-24 23:29:09,064 - INFO - Cluster 159 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 1.61 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 392
+2024-12-24 23:29:09,064 - INFO - Cluster 160 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 1.47 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 341
+2024-12-24 23:29:09,064 - INFO - Cluster 161 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 4.92 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 393
+2024-12-24 23:29:09,064 - INFO - Cluster 162 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 0.28 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 120
+2024-12-24 23:29:09,064 - INFO - Cluster 163 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 2.84 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 271
+2024-12-24 23:29:09,064 - INFO - Cluster 164 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 0.29 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 121
+2024-12-24 23:29:09,064 - INFO - Cluster 165 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 0.25 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 53
+2024-12-24 23:29:09,064 - INFO - Cluster 166 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 11.23 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 725
+2024-12-24 23:29:09,064 - INFO - Cluster 167 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 0.02 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 20
+2024-12-24 23:29:09,064 - INFO - Cluster 168 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 3.25 seconds
+2024-12-24 23:29:09,064 - INFO - Support vectors: 311
+2024-12-24 23:29:09,064 - INFO - Cluster 169 Training:
+2024-12-24 23:29:09,064 - INFO - Training time: 0.84 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 112
+2024-12-24 23:29:09,065 - INFO - Cluster 170 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 2.86 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 290
+2024-12-24 23:29:09,065 - INFO - Cluster 171 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 1.79 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 200
+2024-12-24 23:29:09,065 - INFO - Cluster 172 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 0.11 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 31
+2024-12-24 23:29:09,065 - INFO - Cluster 173 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 0.20 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 47
+2024-12-24 23:29:09,065 - INFO - Cluster 174 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 2.81 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 234
+2024-12-24 23:29:09,065 - INFO - Cluster 175 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 2.73 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 335
+2024-12-24 23:29:09,065 - INFO - Cluster 176 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 1.34 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 217
+2024-12-24 23:29:09,065 - INFO - Cluster 177 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 3.74 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 484
+2024-12-24 23:29:09,065 - INFO - Cluster 178 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 0.30 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 183
+2024-12-24 23:29:09,065 - INFO - Cluster 179 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 1.84 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 258
+2024-12-24 23:29:09,065 - INFO - Cluster 180 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 1.61 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 197
+2024-12-24 23:29:09,065 - INFO - Cluster 181 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 0.73 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 190
+2024-12-24 23:29:09,065 - INFO - Cluster 182 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 0.01 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 44
+2024-12-24 23:29:09,065 - INFO - Cluster 183 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 8.94 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 374
+2024-12-24 23:29:09,065 - INFO - Cluster 184 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 1.38 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 195
+2024-12-24 23:29:09,065 - INFO - Cluster 185 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 1.77 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 272
+2024-12-24 23:29:09,065 - INFO - Cluster 186 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 0.36 seconds
+2024-12-24 23:29:09,065 - INFO - Support vectors: 118
+2024-12-24 23:29:09,065 - INFO - Cluster 187 Training:
+2024-12-24 23:29:09,065 - INFO - Training time: 1.06 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 225
+2024-12-24 23:29:09,066 - INFO - Cluster 188 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.02 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 10
+2024-12-24 23:29:09,066 - INFO - Cluster 189 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 1.60 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 276
+2024-12-24 23:29:09,066 - INFO - Cluster 190 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 1.93 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 494
+2024-12-24 23:29:09,066 - INFO - Cluster 191 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.04 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 62
+2024-12-24 23:29:09,066 - INFO - Cluster 192 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.20 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 66
+2024-12-24 23:29:09,066 - INFO - Cluster 193 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.21 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 110
+2024-12-24 23:29:09,066 - INFO - Cluster 194 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 5.80 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 502
+2024-12-24 23:29:09,066 - INFO - Cluster 195 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 4.00 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 582
+2024-12-24 23:29:09,066 - INFO - Cluster 196 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.36 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 130
+2024-12-24 23:29:09,066 - INFO - Cluster 197 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.73 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 218
+2024-12-24 23:29:09,066 - INFO - Cluster 198 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 3.49 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 385
+2024-12-24 23:29:09,066 - INFO - Cluster 199 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.21 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 26
+2024-12-24 23:29:09,066 - INFO - Cluster 200 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.08 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 38
+2024-12-24 23:29:09,066 - INFO - Cluster 201 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.22 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 140
+2024-12-24 23:29:09,066 - INFO - Cluster 202 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 2.42 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 413
+2024-12-24 23:29:09,066 - INFO - Cluster 203 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.24 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 72
+2024-12-24 23:29:09,066 - INFO - Cluster 204 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 0.48 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 193
+2024-12-24 23:29:09,066 - INFO - Cluster 205 Training:
+2024-12-24 23:29:09,066 - INFO - Training time: 1.67 seconds
+2024-12-24 23:29:09,066 - INFO - Support vectors: 199
+2024-12-24 23:29:09,066 - INFO - Cluster 206 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 2.64 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 212
+2024-12-24 23:29:09,067 - INFO - Cluster 207 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.15 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 96
+2024-12-24 23:29:09,067 - INFO - Cluster 208 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.19 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 27
+2024-12-24 23:29:09,067 - INFO - Cluster 209 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.17 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 107
+2024-12-24 23:29:09,067 - INFO - Cluster 210 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.92 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 224
+2024-12-24 23:29:09,067 - INFO - Cluster 211 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 3.03 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 434
+2024-12-24 23:29:09,067 - INFO - Cluster 212 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.53 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 180
+2024-12-24 23:29:09,067 - INFO - Cluster 213 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.07 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 46
+2024-12-24 23:29:09,067 - INFO - Cluster 214 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.56 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 71
+2024-12-24 23:29:09,067 - INFO - Cluster 215 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.47 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 46
+2024-12-24 23:29:09,067 - INFO - Cluster 216 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 2.45 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 321
+2024-12-24 23:29:09,067 - INFO - Cluster 217 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.37 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 155
+2024-12-24 23:29:09,067 - INFO - Cluster 218 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.95 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 327
+2024-12-24 23:29:09,067 - INFO - Cluster 219 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.08 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 24
+2024-12-24 23:29:09,067 - INFO - Cluster 220 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 8.71 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 643
+2024-12-24 23:29:09,067 - INFO - Cluster 221 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.15 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 130
+2024-12-24 23:29:09,067 - INFO - Cluster 222 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.72 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 143
+2024-12-24 23:29:09,067 - INFO - Cluster 223 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.90 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 197
+2024-12-24 23:29:09,067 - INFO - Cluster 224 Training:
+2024-12-24 23:29:09,067 - INFO - Training time: 0.16 seconds
+2024-12-24 23:29:09,067 - INFO - Support vectors: 20
+2024-12-24 23:29:09,067 - INFO - Cluster 225 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 1.47 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 255
+2024-12-24 23:29:09,068 - INFO - Cluster 226 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 1.07 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 154
+2024-12-24 23:29:09,068 - INFO - Cluster 227 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 1.61 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 383
+2024-12-24 23:29:09,068 - INFO - Cluster 228 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.04 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 24
+2024-12-24 23:29:09,068 - INFO - Cluster 229 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.17 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 57
+2024-12-24 23:29:09,068 - INFO - Cluster 230 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.07 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 15
+2024-12-24 23:29:09,068 - INFO - Cluster 231 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.25 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 90
+2024-12-24 23:29:09,068 - INFO - Cluster 232 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.29 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 116
+2024-12-24 23:29:09,068 - INFO - Cluster 233 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.03 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 22
+2024-12-24 23:29:09,068 - INFO - Cluster 234 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.12 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 42
+2024-12-24 23:29:09,068 - INFO - Cluster 235 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.26 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 33
+2024-12-24 23:29:09,068 - INFO - Cluster 236 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.04 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 58
+2024-12-24 23:29:09,068 - INFO - Cluster 237 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.18 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 53
+2024-12-24 23:29:09,068 - INFO - Cluster 238 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.02 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 26
+2024-12-24 23:29:09,068 - INFO - Cluster 239 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.59 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 220
+2024-12-24 23:29:09,068 - INFO - Cluster 240 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.35 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 40
+2024-12-24 23:29:09,068 - INFO - Cluster 241 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 4.52 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 624
+2024-12-24 23:29:09,068 - INFO - Cluster 242 Training:
+2024-12-24 23:29:09,068 - INFO - Training time: 0.09 seconds
+2024-12-24 23:29:09,068 - INFO - Support vectors: 33
+2024-12-24 23:29:09,068 - INFO - 
+Total SVM training time: 724.39 seconds
+2024-12-24 23:29:09,068 - INFO - 
+=== SVM Testing ===
+2024-12-24 23:29:09,068 - INFO - Clustering test data...
+2024-12-24 23:29:09,069 - INFO - Transforming data using selected features...
+2024-12-24 23:29:09,393 - WARNING - Empty cluster: 4
+2024-12-24 23:29:09,393 - WARNING - Empty cluster: 6
+2024-12-24 23:29:09,411 - WARNING - Empty cluster: 10
+2024-12-24 23:29:09,411 - WARNING - Empty cluster: 11
+2024-12-24 23:29:09,458 - WARNING - Empty cluster: 16
+2024-12-24 23:29:09,465 - WARNING - Empty cluster: 18
+2024-12-24 23:29:09,466 - WARNING - Empty cluster: 19
+2024-12-24 23:29:09,501 - WARNING - Empty cluster: 26
+2024-12-24 23:29:09,520 - WARNING - Empty cluster: 29
+2024-12-24 23:29:09,699 - WARNING - Empty cluster: 38
+2024-12-24 23:29:09,699 - WARNING - Empty cluster: 39
+2024-12-24 23:29:09,728 - WARNING - Empty cluster: 50
+2024-12-24 23:29:09,728 - WARNING - Empty cluster: 55
+2024-12-24 23:29:09,777 - WARNING - Empty cluster: 63
+2024-12-24 23:29:09,792 - WARNING - Empty cluster: 66
+2024-12-24 23:29:13,694 - INFO - Final testset labels: 117
+2024-12-24 23:29:13,929 - INFO - Assignment time: 4.86 seconds
+2024-12-24 23:29:13,929 - INFO - Feature Construction test data...
+2024-12-24 23:29:23,493 - INFO - Mutual and qbsofs test data...
+2024-12-24 23:29:24,360 - INFO - predicting...
+2024-12-24 23:31:08,337 - INFO - Prediction time: 103.98 seconds
+2024-12-24 23:31:08,338 - INFO - Testing time: 119.27 seconds
+2024-12-24 23:31:08,341 - INFO - Cluster 6 Test samples: 5214, Accuracy: 0.5959, F1 Score: 0.4900
+2024-12-24 23:31:08,342 - INFO - Cluster 11 Test samples: 1452, Accuracy: 0.7521, F1 Score: 0.6548
+2024-12-24 23:31:08,343 - INFO - Cluster 12 Test samples: 118, Accuracy: 0.5085, F1 Score: 0.5085
+2024-12-24 23:31:08,344 - INFO - Cluster 15 Test samples: 601, Accuracy: 0.9451, F1 Score: 0.9184
+2024-12-24 23:31:08,345 - INFO - Cluster 20 Test samples: 89, Accuracy: 0.7303, F1 Score: 0.6165
+2024-12-24 23:31:08,346 - INFO - Cluster 24 Test samples: 1703, Accuracy: 0.6994, F1 Score: 0.6074
+2024-12-24 23:31:08,347 - INFO - Cluster 29 Test samples: 8, Accuracy: 0.7500, F1 Score: 0.6429
+2024-12-24 23:31:08,348 - INFO - Cluster 31 Test samples: 651, Accuracy: 0.8602, F1 Score: 0.8632
+2024-12-24 23:31:08,350 - INFO - Cluster 33 Test samples: 3354, Accuracy: 0.2645, F1 Score: 0.1106
+2024-12-24 23:31:08,350 - INFO - Cluster 47 Test samples: 4, Accuracy: 0.2500, F1 Score: 0.2000
+2024-12-24 23:31:08,351 - INFO - Cluster 50 Test samples: 171, Accuracy: 0.3450, F1 Score: 0.4172
+2024-12-24 23:31:08,352 - INFO - Cluster 51 Test samples: 205, Accuracy: 0.3268, F1 Score: 0.3312
+2024-12-24 23:31:08,353 - INFO - Cluster 58 Test samples: 80, Accuracy: 0.9000, F1 Score: 0.9000
+2024-12-24 23:31:08,353 - INFO - Cluster 59 Test samples: 29, Accuracy: 0.0000, F1 Score: 0.0000
+2024-12-24 23:31:08,355 - INFO - Cluster 61 Test samples: 3241, Accuracy: 0.4381, F1 Score: 0.4923
+2024-12-24 23:31:08,356 - INFO - Cluster 63 Test samples: 59, Accuracy: 0.9661, F1 Score: 0.9494
+2024-12-24 23:31:08,359 - INFO - Cluster 66 Test samples: 5708, Accuracy: 0.6699, F1 Score: 0.5375
+2024-12-24 23:31:08,360 - INFO - Cluster 67 Test samples: 1190, Accuracy: 0.5613, F1 Score: 0.4036
+2024-12-24 23:31:08,361 - INFO - Cluster 68 Test samples: 2252, Accuracy: 0.4947, F1 Score: 0.3415
+2024-12-24 23:31:08,362 - INFO - Cluster 69 Test samples: 369, Accuracy: 0.9566, F1 Score: 0.9354
+2024-12-24 23:31:08,363 - INFO - Cluster 70 Test samples: 1, Accuracy: 0.0000, F1 Score: 0.0000
+2024-12-24 23:31:08,363 - INFO - Cluster 71 Test samples: 2, Accuracy: 0.5000, F1 Score: 0.3333
+2024-12-24 23:31:08,364 - INFO - Cluster 80 Test samples: 9, Accuracy: 0.0000, F1 Score: 0.0000
+2024-12-24 23:31:08,365 - INFO - Cluster 82 Test samples: 1473, Accuracy: 0.6599, F1 Score: 0.5247
+2024-12-24 23:31:08,366 - INFO - Cluster 83 Test samples: 1982, Accuracy: 0.1216, F1 Score: 0.0264
+2024-12-24 23:31:08,369 - INFO - Cluster 84 Test samples: 4482, Accuracy: 0.6825, F1 Score: 0.5931
+2024-12-24 23:31:08,370 - INFO - Cluster 85 Test samples: 793, Accuracy: 0.6141, F1 Score: 0.4753
+2024-12-24 23:31:08,370 - INFO - Cluster 94 Test samples: 141, Accuracy: 0.3617, F1 Score: 0.1922
+2024-12-24 23:31:08,371 - INFO - Cluster 95 Test samples: 510, Accuracy: 0.5588, F1 Score: 0.4007
+2024-12-24 23:31:08,373 - INFO - Cluster 96 Test samples: 2805, Accuracy: 0.3080, F1 Score: 0.1451
+2024-12-24 23:31:08,374 - INFO - Cluster 97 Test samples: 2670, Accuracy: 0.0697, F1 Score: 0.0227
+2024-12-24 23:31:08,378 - INFO - Cluster 98 Test samples: 7505, Accuracy: 0.5747, F1 Score: 0.7155
+2024-12-24 23:31:08,379 - INFO - Cluster 101 Test samples: 116, Accuracy: 0.7414, F1 Score: 0.7484
+2024-12-24 23:31:08,379 - INFO - Cluster 102 Test samples: 478, Accuracy: 0.0669, F1 Score: 0.0158
+2024-12-24 23:31:08,380 - INFO - Cluster 103 Test samples: 5, Accuracy: 0.0000, F1 Score: 0.0000
+2024-12-24 23:31:08,381 - INFO - Cluster 104 Test samples: 1, Accuracy: 0.0000, F1 Score: 0.0000
+2024-12-24 23:31:08,382 - INFO - Cluster 111 Test samples: 180, Accuracy: 0.9944, F1 Score: 0.9917
+2024-12-24 23:31:08,382 - INFO - Cluster 120 Test samples: 109, Accuracy: 0.4862, F1 Score: 0.4784
+2024-12-24 23:31:08,383 - INFO - Cluster 121 Test samples: 3, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,384 - INFO - Cluster 123 Test samples: 27, Accuracy: 0.1111, F1 Score: 0.0222
+2024-12-24 23:31:08,384 - INFO - Cluster 124 Test samples: 1, Accuracy: 0.0000, F1 Score: 0.0000
+2024-12-24 23:31:08,385 - INFO - Cluster 125 Test samples: 7, Accuracy: 0.8571, F1 Score: 0.7912
+2024-12-24 23:31:08,386 - INFO - Cluster 126 Test samples: 22, Accuracy: 0.2273, F1 Score: 0.0842
+2024-12-24 23:31:08,386 - INFO - Cluster 128 Test samples: 592, Accuracy: 0.8446, F1 Score: 0.8832
+2024-12-24 23:31:08,389 - INFO - Cluster 129 Test samples: 4300, Accuracy: 0.6377, F1 Score: 0.7541
+2024-12-24 23:31:08,390 - INFO - Cluster 130 Test samples: 1085, Accuracy: 0.0737, F1 Score: 0.0124
+2024-12-24 23:31:08,390 - INFO - Cluster 131 Test samples: 2, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,391 - INFO - Cluster 132 Test samples: 600, Accuracy: 0.0683, F1 Score: 0.0698
+2024-12-24 23:31:08,392 - INFO - Cluster 137 Test samples: 950, Accuracy: 0.9337, F1 Score: 0.9017
+2024-12-24 23:31:08,395 - INFO - Cluster 138 Test samples: 7200, Accuracy: 0.8149, F1 Score: 0.7467
+2024-12-24 23:31:08,396 - INFO - Cluster 139 Test samples: 1471, Accuracy: 0.2230, F1 Score: 0.0825
+2024-12-24 23:31:08,397 - INFO - Cluster 142 Test samples: 1, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,398 - INFO - Cluster 144 Test samples: 372, Accuracy: 0.9301, F1 Score: 0.8964
+2024-12-24 23:31:08,399 - INFO - Cluster 146 Test samples: 1, Accuracy: 0.0000, F1 Score: 0.0000
+2024-12-24 23:31:08,399 - INFO - Cluster 147 Test samples: 9, Accuracy: 0.4444, F1 Score: 0.6154
+2024-12-24 23:31:08,400 - INFO - Cluster 148 Test samples: 56, Accuracy: 0.1250, F1 Score: 0.1939
+2024-12-24 23:31:08,401 - INFO - Cluster 150 Test samples: 23, Accuracy: 0.1304, F1 Score: 0.0301
+2024-12-24 23:31:08,401 - INFO - Cluster 151 Test samples: 12, Accuracy: 0.8333, F1 Score: 0.8148
+2024-12-24 23:31:08,402 - INFO - Cluster 152 Test samples: 8, Accuracy: 0.0000, F1 Score: 0.0000
+2024-12-24 23:31:08,403 - INFO - Cluster 153 Test samples: 47, Accuracy: 0.1064, F1 Score: 0.1234
+2024-12-24 23:31:08,403 - INFO - Cluster 154 Test samples: 40, Accuracy: 0.1500, F1 Score: 0.1841
+2024-12-24 23:31:08,516 - INFO - Cluster 155 Test samples: 228130, Accuracy: 0.6886, F1 Score: 0.7025
+2024-12-24 23:31:08,519 - INFO - Cluster 158 Test samples: 6419, Accuracy: 0.1374, F1 Score: 0.0334
+2024-12-24 23:31:08,520 - INFO - Cluster 164 Test samples: 253, Accuracy: 0.1502, F1 Score: 0.0392
+2024-12-24 23:31:08,520 - INFO - Cluster 165 Test samples: 1, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,521 - INFO - Cluster 166 Test samples: 237, Accuracy: 0.4473, F1 Score: 0.3681
+2024-12-24 23:31:08,522 - INFO - Cluster 167 Test samples: 3, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,523 - INFO - Cluster 170 Test samples: 2273, Accuracy: 0.5077, F1 Score: 0.3839
+2024-12-24 23:31:08,524 - INFO - Cluster 171 Test samples: 190, Accuracy: 0.3316, F1 Score: 0.2892
+2024-12-24 23:31:08,525 - INFO - Cluster 172 Test samples: 290, Accuracy: 0.9828, F1 Score: 0.9913
+2024-12-24 23:31:08,526 - INFO - Cluster 174 Test samples: 20, Accuracy: 0.5000, F1 Score: 0.6667
+2024-12-24 23:31:08,526 - INFO - Cluster 175 Test samples: 38, Accuracy: 0.2368, F1 Score: 0.3729
+2024-12-24 23:31:08,527 - INFO - Cluster 176 Test samples: 1544, Accuracy: 0.0738, F1 Score: 0.0207
+2024-12-24 23:31:08,528 - INFO - Cluster 177 Test samples: 1, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,529 - INFO - Cluster 179 Test samples: 23, Accuracy: 0.5652, F1 Score: 0.4082
+2024-12-24 23:31:08,558 - INFO - Cluster 185 Test samples: 60403, Accuracy: 0.5439, F1 Score: 0.4025
+2024-12-24 23:31:08,559 - INFO - Cluster 186 Test samples: 1, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,560 - INFO - Cluster 187 Test samples: 4, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,560 - INFO - Cluster 191 Test samples: 8, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,561 - INFO - Cluster 193 Test samples: 36, Accuracy: 0.7500, F1 Score: 0.7556
+2024-12-24 23:31:08,562 - INFO - Cluster 194 Test samples: 250, Accuracy: 0.5520, F1 Score: 0.3927
+2024-12-24 23:31:08,565 - INFO - Cluster 197 Test samples: 5668, Accuracy: 0.7077, F1 Score: 0.7118
+2024-12-24 23:31:08,570 - INFO - Cluster 198 Test samples: 13844, Accuracy: 0.0709, F1 Score: 0.0122
+2024-12-24 23:31:08,571 - INFO - Cluster 199 Test samples: 41, Accuracy: 0.0000, F1 Score: 0.0000
+2024-12-24 23:31:08,574 - INFO - Cluster 200 Test samples: 6798, Accuracy: 0.2618, F1 Score: 0.3946
+2024-12-24 23:31:08,575 - INFO - Cluster 203 Test samples: 1, Accuracy: 0.0000, F1 Score: 0.0000
+2024-12-24 23:31:08,580 - INFO - Cluster 204 Test samples: 12293, Accuracy: 0.1824, F1 Score: 0.1003
+2024-12-24 23:31:08,585 - INFO - Cluster 209 Test samples: 11632, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,586 - INFO - Cluster 210 Test samples: 1328, Accuracy: 0.6642, F1 Score: 0.5475
+2024-12-24 23:31:08,587 - INFO - Cluster 211 Test samples: 616, Accuracy: 0.5860, F1 Score: 0.4377
+2024-12-24 23:31:08,587 - INFO - Cluster 212 Test samples: 139, Accuracy: 0.2086, F1 Score: 0.1588
+2024-12-24 23:31:08,588 - INFO - Cluster 213 Test samples: 989, Accuracy: 0.7917, F1 Score: 0.8418
+2024-12-24 23:31:08,591 - INFO - Cluster 214 Test samples: 5654, Accuracy: 0.8343, F1 Score: 0.8787
+2024-12-24 23:31:08,594 - INFO - Cluster 216 Test samples: 5991, Accuracy: 0.6421, F1 Score: 0.6759
+2024-12-24 23:31:08,595 - INFO - Cluster 217 Test samples: 926, Accuracy: 0.4374, F1 Score: 0.4536
+2024-12-24 23:31:08,596 - INFO - Cluster 219 Test samples: 194, Accuracy: 0.2990, F1 Score: 0.4603
+2024-12-24 23:31:08,597 - INFO - Cluster 220 Test samples: 627, Accuracy: 0.2424, F1 Score: 0.1670
+2024-12-24 23:31:08,598 - INFO - Cluster 221 Test samples: 19, Accuracy: 0.7368, F1 Score: 0.6252
+2024-12-24 23:31:08,598 - INFO - Cluster 222 Test samples: 35, Accuracy: 0.7429, F1 Score: 0.8281
+2024-12-24 23:31:08,599 - INFO - Cluster 223 Test samples: 23, Accuracy: 0.9565, F1 Score: 0.9353
+2024-12-24 23:31:08,600 - INFO - Cluster 224 Test samples: 1958, Accuracy: 0.4944, F1 Score: 0.4983
+2024-12-24 23:31:08,601 - INFO - Cluster 225 Test samples: 69, Accuracy: 0.6812, F1 Score: 0.5520
+2024-12-24 23:31:08,602 - INFO - Cluster 227 Test samples: 450, Accuracy: 0.7156, F1 Score: 0.7200
+2024-12-24 23:31:08,602 - INFO - Cluster 228 Test samples: 2, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,603 - INFO - Cluster 229 Test samples: 522, Accuracy: 0.0709, F1 Score: 0.0094
+2024-12-24 23:31:08,604 - INFO - Cluster 231 Test samples: 158, Accuracy: 0.8734, F1 Score: 0.8653
+2024-12-24 23:31:08,605 - INFO - Cluster 232 Test samples: 43, Accuracy: 0.2558, F1 Score: 0.2218
+2024-12-24 23:31:08,605 - INFO - Cluster 233 Test samples: 1, Accuracy: 1.0000, F1 Score: 1.0000
+2024-12-24 23:31:08,608 - INFO - Cluster 234 Test samples: 5273, Accuracy: 0.9012, F1 Score: 0.8959
+2024-12-24 23:31:08,621 - INFO - Cluster 235 Test samples: 30428, Accuracy: 0.6186, F1 Score: 0.4804
+2024-12-24 23:31:08,622 - INFO - Cluster 236 Test samples: 7, Accuracy: 0.7143, F1 Score: 0.7143
+2024-12-24 23:31:08,623 - INFO - Cluster 237 Test samples: 619, Accuracy: 0.1535, F1 Score: 0.0408
+2024-12-24 23:31:08,624 - INFO - Cluster 238 Test samples: 291, Accuracy: 0.0722, F1 Score: 0.0097
+2024-12-24 23:31:08,626 - INFO - Cluster 239 Test samples: 3938, Accuracy: 0.4294, F1 Score: 0.2652
+2024-12-24 23:31:08,626 - INFO - Cluster 240 Test samples: 23, Accuracy: 0.6522, F1 Score: 0.5149
+2024-12-24 23:31:08,627 - INFO - Cluster 241 Test samples: 1459, Accuracy: 0.0473, F1 Score: 0.0043
+2024-12-24 23:31:08,628 - INFO - Cluster 242 Test samples: 454, Accuracy: 0.9097, F1 Score: 0.8688
+2024-12-24 23:31:08,628 - INFO - === Overall Test Results ===
+2024-12-24 23:31:08,628 - INFO - Total test samples: 479226
+2024-12-24 23:31:09,166 - INFO - Overall Accuracy: 0.6030
+2024-12-24 23:31:09,166 - INFO - Overall F1 Score: 0.4884
+2024-12-24 23:31:09,166 - INFO - === Timing Summary ===
+2024-12-24 23:31:09,166 - INFO - Loading training data: 73.97 seconds
+2024-12-24 23:31:09,166 - INFO - Loading test data: 18.46 seconds
+2024-12-24 23:31:09,166 - INFO - Data normalization: 0.68 seconds
+2024-12-24 23:31:09,166 - INFO - Clustering: 297.65 seconds
+2024-12-24 23:31:09,166 - INFO - Data balancing: 20.98 seconds
+2024-12-24 23:31:09,166 - INFO - Feature construction: 43.13 seconds
+2024-12-24 23:31:09,166 - INFO - Feature processing: 4409.28 seconds
+2024-12-24 23:31:09,166 - INFO - SVM processing: 10297.77 seconds
+2024-12-24 23:31:09,166 - INFO -   Hyperparameter tuning: 9453.81 seconds
+2024-12-24 23:31:09,166 - INFO -   Training time: 724.39 seconds
+2024-12-24 23:31:09,166 - INFO -   Testing time: 119.27 seconds
+2024-12-24 23:31:09,166 - INFO -       Prediction time: 103.98 seconds
+2024-12-24 23:31:09,166 - INFO - Total execution time: 15123.99 seconds
+2024-12-24 23:31:09,166 - INFO - Finished at 2024-12-24 23:31:09
